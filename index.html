@@ -96,185 +96,176 @@ canvas{display:none}
 let font='Yomogi', icon=null;
 
 document.getElementById('iconI').addEventListener('change',e=>{
-  const f=e.target.files[0]; if(!f)return;
+  const f=e.target.files[0];if(!f)return;
   const r=new FileReader();
-  r.onload=ev=>{
-    const i=new Image();
-    i.onload=()=>{icon=i;const p=document.getElementById('iconP');p.innerHTML='';const m=document.createElement('img');m.src=ev.target.result;p.appendChild(m)};
-    i.src=ev.target.result;
-  };
+  r.onload=ev=>{const i=new Image();i.onload=()=>{icon=i;const p=document.getElementById('iconP');p.innerHTML='';const m=document.createElement('img');m.src=ev.target.result;p.appendChild(m)};i.src=ev.target.result};
   r.readAsDataURL(f);
 });
 function sf(el){document.querySelectorAll('.fo').forEach(o=>o.classList.remove('on'));el.classList.add('on');font=el.getAttribute('data-f')}
 function V(id){return document.getElementById(id).value||''}
 
 function gen(){
-  const c=document.getElementById('cv'), g=c.getContext('2d');
-  const W=900, H=1180, S=2;
-  c.width=W*S; c.height=H*S;
-  c.style.width=W+'px';
+  const c=document.getElementById('cv'),g=c.getContext('2d');
+  const W=960,H=1280,S=2;
+  c.width=W*S;c.height=H*S;
   g.scale(S,S);
 
-  // ====== BG ======
-  g.fillStyle='#daedf8';
+  // ===== BG =====
+  g.fillStyle='#d8ebf6';
   g.fillRect(0,0,W,H);
-  for(let i=-H*2;i<W+H*2;i+=15){
-    g.strokeStyle='rgba(220,238,250,0.9)'; g.lineWidth=8;
+  for(let i=-H*2;i<W+H*2;i+=16){
+    g.strokeStyle='rgba(218,237,250,0.9)';g.lineWidth=9;
     g.beginPath();g.moveTo(i,0);g.lineTo(i+H*1.1,H);g.stroke();
   }
 
-  // ====== WHITE CARD ======
-  const M=30; // margin
-  const cx=M, cy=88, cw=W-M*2, ch=H-cy-M;
+  // ===== WHITE CARD =====
+  const cardM=34;
+  const cardX=cardM,cardY=92,cardW=W-cardM*2,cardH=H-cardY-cardM;
   g.save();
   g.shadowColor='rgba(120,170,210,0.06)';g.shadowBlur=14;g.shadowOffsetY=2;
-  g.fillStyle='#ffffff'; rr(g,cx,cy,cw,ch,22); g.fill();
+  g.fillStyle='#ffffff';rr(g,cardX,cardY,cardW,cardH,24);g.fill();
   g.restore();
 
-  // ====== HEADER ======
+  // ===== HEADER =====
   g.textAlign='center';g.textBaseline='alphabetic';
-  g.fillStyle='#b0cedf'; g.font="400 12px 'Zen Maru Gothic'";
-  g.fillText('L O V E   C L I N I C',W/2,32);
-  g.font="900 40px 'Zen Maru Gothic'";
-  g.textAlign='left';
-  const hy=74;
-  const w1=g.measureText('恋愛').width, wh=g.measureText('♡').width, w2=g.measureText('病院').width;
-  const sp=10, tot=w1+wh+w2+sp*2, hsx=(W-tot)/2;
-  g.fillStyle='#6aa7d4'; g.fillText('恋愛',hsx,hy);
-  g.fillStyle='#e88fb8'; g.fillText('♡',hsx+w1+sp,hy);
-  g.fillStyle='#6aa7d4'; g.fillText('病院',hsx+w1+wh+sp*2,hy);
+  g.fillStyle='#aecfdf';g.font="400 13px 'Zen Maru Gothic'";
+  g.fillText('L O V E   C L I N I C',W/2,34);
+  g.font="900 42px 'Zen Maru Gothic'";
+  const hy=78;g.textAlign='left';
+  const w1=g.measureText('恋愛').width,wh=g.measureText('♡').width,w2=g.measureText('病院').width;
+  const sp=10,tot=w1+wh+w2+sp*2,hsx=(W-tot)/2;
+  g.fillStyle='#6aa7d4';g.fillText('恋愛',hsx,hy);
+  g.fillStyle='#e88fb8';g.fillText('♡',hsx+w1+sp,hy);
+  g.fillStyle='#6aa7d4';g.fillText('病院',hsx+w1+wh+sp*2,hy);
 
-  // ====== HEARTS ======
-  heartO(g,cx+6,cy-4,28,'rgba(155,205,240,0.45)',2);
-  heartF(g,W-cx-10,cy-6,24,'rgba(155,205,240,0.35)');
-  heartF(g,W-cx-42,cy+10,14,'rgba(155,205,240,0.22)');
-  heartF(g,cx+12,H-M+4,14,'rgba(185,165,210,0.3)');
-  heartO(g,W-cx-14,H-M+2,22,'rgba(155,205,240,0.35)',1.5);
+  // ===== HEARTS =====
+  heartO(g,cardX+4,cardY-6,30,'rgba(155,205,240,0.45)',2);
+  heartF(g,W-cardX-8,cardY-8,26,'rgba(155,205,240,0.35)');
+  heartF(g,W-cardX-42,cardY+8,15,'rgba(155,205,240,0.22)');
+  heartF(g,cardX+10,H-cardM+6,15,'rgba(185,165,215,0.3)');
+  heartO(g,W-cardX-12,H-cardM+4,24,'rgba(155,205,240,0.35)',1.5);
 
-  // ====== INNER LAYOUT ======
-  const pad=46;
-  const L=cx+pad, R=cx+cw-pad, FW=R-L;
+  // ===== INNER LAYOUT =====
+  const pad=48;
+  const L=cardX+pad,R=cardX+cardW-pad,FW=R-L;
   const MID=L+FW/2;
-  const CL=L, CR=MID+14;
-  const CLW=MID-CL-14, CRW=R-CR;
+  const CL=L,CR=MID+16;
+  const CLW=MID-CL-16,CRW=R-CR;
 
-  const lc='#7ab4d6';
-  const vc='#1a1a1a';
-  const dc='rgba(170,205,228,0.55)';
+  const lc='#6aaad0';  // label color
+  const vc='#1a1a1a';  // value color
+  const dc='rgba(175,210,230,0.50)'; // line color
 
-  // ====== ICON ======
-  const ix=L, iy=cy+38, iw=235, ih=235;
-  g.save(); rr(g,ix,iy,iw,ih,14); g.clip();
+  // ===== ICON + RIGHT 3 ROWS =====
+  // Key: icon height = total height of 3 rows
+  const iconX=L,iconY=cardY+pad;
+  const rowH3=90; // each of the 3 right rows
+  const iconSize=rowH3*3; // icon = 3 rows height = 270
+  const iconW=iconSize,iconH=iconSize;
+
+  // Draw icon
+  g.save();rr(g,iconX,iconY,iconW,iconH,16);g.clip();
   if(icon){
-    const sc=Math.max(iw/icon.width,ih/icon.height);
+    const sc=Math.max(iconW/icon.width,iconH/icon.height);
     const sw=icon.width*sc,sh=icon.height*sc;
-    g.drawImage(icon,ix-(sw-iw)/2,iy-(sh-ih)/2,sw,sh);
-  } else {
-    g.fillStyle='#edf4fb';g.fillRect(ix,iy,iw,ih);
-    g.fillStyle='#a0c2da';g.font="500 14px 'Zen Maru Gothic'";
-    g.textAlign='center';g.fillText('No Image',ix+iw/2,iy+ih/2+5);
+    g.drawImage(icon,iconX-(sw-iconW)/2,iconY-(sh-iconH)/2,sw,sh);
+  }else{
+    g.fillStyle='#edf4fb';g.fillRect(iconX,iconY,iconW,iconH);
+    g.fillStyle='#a0c2da';g.font="500 15px 'Zen Maru Gothic'";
+    g.textAlign='center';g.fillText('No Image',iconX+iconW/2,iconY+iconH/2+5);
   }
   g.restore();
 
-  // ====== HELPERS ======
-  function lab(t,x,y){
+  // Right column start
+  const rx=iconX+iconW+32,rw=R-rx;
+  g.textAlign='left';
+
+  function lab(t,lx,ly){
     g.fillStyle=lc;
-    g.font="600 16px 'Zen Maru Gothic'";
+    g.font="700 18px 'Zen Maru Gothic'";
     g.textAlign='left';
-    g.fillText(t,x,y);
+    g.fillText(t,lx,ly);
   }
-  function ans(t,x,y,mw,sz){
-    if(!t) return y;
+  function ans(t,ax,ay,mw,sz){
+    if(!t)return ay;
     g.fillStyle=vc;
     g.font="600 "+(sz||28)+"px '"+font+"','Zen Maru Gothic',sans-serif";
     g.textAlign='left';
-    return wt(g,t,x,y,mw,(sz||28)+8);
+    return wt(g,t,ax,ay,mw,(sz||28)+8);
   }
-  function line(x1,x2,y){
-    g.strokeStyle=dc; g.lineWidth=1.2; g.setLineDash([]);
+  function hln(x1,x2,y){
+    g.strokeStyle=dc;g.lineWidth=1.2;g.setLineDash([]);
     g.beginPath();g.moveTo(x1,y);g.lineTo(x2,y);g.stroke();
   }
 
-  // ====== RIGHT SIDE: beside icon ======
-  const rx=ix+iw+30, rw=R-rx;
+  // Row 1: お名前
+  let ry0=iconY;
+  lab('お名前',rx,ry0+22);
+  ans(V('f_name'),rx,ry0+58,rw,38);
+  hln(rx,R,ry0+rowH3);
 
-  // 3 rows beside icon, each ~78px
-  const rh=ih/3;
+  // Row 2: 年齢・出身
+  let ry1=iconY+rowH3;
+  lab('年齢・出身',rx,ry1+22);
+  ans(V('f_age')+'　'+V('f_from'),rx,ry1+58,rw,32);
+  hln(rx,R,ry1+rowH3);
 
-  // お名前
-  let y0=iy+6;
-  lab('お名前',rx,y0+16);
-  ans(V('f_name'),rx,y0+52,rw,38);
-  line(rx,R,y0+rh-4);
+  // Row 3: 職業
+  let ry2=iconY+rowH3*2;
+  lab('職業',rx,ry2+22);
+  ans(V('f_job'),rx,ry2+58,rw,34);
 
-  // 年齢・出身
-  y0=iy+rh+6;
-  lab('年齢・出身',rx,y0+16);
-  ans(V('f_age')+'　'+V('f_from'),rx,y0+50,rw,32);
-  line(rx,R,y0+rh-4);
+  // ===== SECTION DIVIDER (full width, under icon area) =====
+  const secDivY=iconY+iconH+24;
+  hln(L,R,secDivY);
 
-  // 職業
-  y0=iy+rh*2+6;
-  lab('職業',rx,y0+16);
-  ans(V('f_job'),rx,y0+52,rw,34);
+  // ===== TWO-COLUMN ROWS (no vertical lines, only horizontal) =====
+  const twoRowH=104;
+  const bigRowH=118; // for rows with larger text or more content
 
-  // ====== TWO-COLUMN SECTION ======
-  // Section separator line (full width, under icon area)
-  const secY=iy+ih+30;
-  line(L,R,secY);
-
-  // 5 rows, each with: label top-left, label top-right, answers, then line at bottom
-  // NO vertical line between columns, NO box borders
-  // Just horizontal lines between rows
-
-  const rowDefs=[
-    {ll:'ラブタイプ',           rl:'ニックネーム',          ls:30, rs:30},
-    {ll:'好きなアーティスト',     rl:'子供の頃の夢',         ls:26, rs:28},
-    {ll:'趣味・特技',            rl:'恋愛における自分の強み', ls:24, rs:24},
-    {ll:'過去の恋愛失敗談',      rl:'恋愛偏差値',           ls:20, rs:40},
-    {ll:'番組内で自分のここをみて！',rl:'OA直前の気持ちは？', ls:26, rs:24},
+  const rows=[
+    {ll:'ラブタイプ',            rl:'ニックネーム',           ls:30,rs:30,h:twoRowH},
+    {ll:'好きなアーティスト',      rl:'子供の頃の夢',          ls:26,rs:28,h:twoRowH},
+    {ll:'趣味・特技',             rl:'恋愛における自分の強み',  ls:24,rs:24,h:twoRowH},
+    {ll:'過去の恋愛失敗談',       rl:'恋愛偏差値',            ls:20,rs:42,h:bigRowH},
+    {ll:'番組内で自分のここをみて！',rl:'OA直前の気持ちは？',   ls:26,rs:24,h:bigRowH},
   ];
-  const rowVals=[
-    [()=>V('f_love'), ()=>V('f_nick')],
-    [()=>V('f_art'),  ()=>V('f_dream')],
+  const vls=[
+    [()=>V('f_love'),()=>V('f_nick')],
+    [()=>V('f_art'),()=>V('f_dream')],
     [()=>V('f_hobby'),()=>V('f_str')],
-    [()=>V('f_fail'), ()=>V('f_dev')],
+    [()=>V('f_fail'),()=>V('f_dev')],
     [()=>V('f_watch'),()=>V('f_feel')],
   ];
 
-  // Fixed row height to keep consistent spacing
-  const rowH=108; // generous height per row
-  const lastRowH=108;
+  let ry=secDivY;
+  rows.forEach((row,i)=>{
+    const labY=ry+28;
+    const valY=ry+60;
 
-  let ry=secY;
+    // Left
+    lab(row.ll,CL,labY);
+    ans(vls[i][0](),CL,valY,CLW,row.ls);
 
-  rowDefs.forEach((row,i)=>{
-    const isLast=(i===rowDefs.length-1);
-    const h=isLast?lastRowH:rowH;
-    const labY=ry+26;  // label position
-    const valY=ry+60;  // answer position (good gap from label)
+    // Right
+    lab(row.rl,CR,labY);
+    ans(vls[i][1](),CR,valY,CRW,row.rs);
 
-    // Left label + answer
-    lab(row.ll, CL, labY);
-    ans(rowVals[i][0](), CL, valY, CLW, row.ls);
-
-    // Right label + answer
-    lab(row.rl, CR, labY);
-    ans(rowVals[i][1](), CR, valY, CRW, row.rs);
-
-    ry+=h;
-
-    // Horizontal line at bottom of this row
-    line(L, R, ry);
+    ry+=row.h;
+    hln(L,R,ry);
   });
 
-  // ====== OUTPUT ======
+  // Bottom area below last line = generous whitespace until card bottom
+  // (card bottom is at cardY+cardH, last line is at ry)
+  // The remaining space is the "bottom margin" — we sized H to ensure this is large
+
+  // ===== OUTPUT =====
   document.getElementById('resultImg').src=c.toDataURL('image/png');
   document.getElementById('out').style.display='block';
   setTimeout(()=>document.getElementById('out').scrollIntoView({behavior:'smooth'}),80);
 }
 
-// ====== UTILS ======
+// ===== UTILS =====
 function rr(g,a,b,w,h,r){
   g.beginPath();g.moveTo(a+r,b);g.lineTo(a+w-r,b);g.quadraticCurveTo(a+w,b,a+w,b+r);
   g.lineTo(a+w,b+h-r);g.quadraticCurveTo(a+w,b+h,a+w-r,b+h);g.lineTo(a+r,b+h);
