@@ -13,8 +13,7 @@ body{font-family:'Zen Maru Gothic',sans-serif;background:linear-gradient(135deg,
 .wrap{max-width:640px;margin:0 auto}
 .title{text-align:center;margin-bottom:22px}
 .title small{color:#a3c8e2;font-size:.7rem;letter-spacing:3px;display:block;margin-bottom:2px}
-.title h1{font-size:1.7rem;color:#6aa7d4;letter-spacing:1px}
-.title h1 b{color:#e88fb8;font-weight:900}
+.title h1{font-size:1.7rem;color:#6aa7d4}.title h1 b{color:#e88fb8;font-weight:900}
 .desc{text-align:center;color:#b0b0b0;font-size:.78rem;margin-bottom:20px}
 .card{background:#fff;border-radius:18px;padding:22px 24px;margin-bottom:16px;box-shadow:0 3px 14px rgba(90,140,200,.08)}
 .card h2{color:#6aa7d4;font-size:1.05rem;margin-bottom:14px;padding-bottom:8px;border-bottom:2px dashed #d4e6f4}
@@ -111,40 +110,34 @@ function V(id){return document.getElementById(id).value||''}
 
 function gen(){
   const c=document.getElementById('cv'), g=c.getContext('2d');
-  const W=900, H=1160, S=2;
+  const W=900, H=1180, S=2;
   c.width=W*S; c.height=H*S;
+  c.style.width=W+'px';
   g.scale(S,S);
 
-  // ====== BACKGROUND ======
+  // ====== BG ======
   g.fillStyle='#daedf8';
   g.fillRect(0,0,W,H);
-  // Diagonal stripes
-  g.save();
   for(let i=-H*2;i<W+H*2;i+=15){
-    g.strokeStyle='rgba(220,238,250,0.9)';
-    g.lineWidth=8;
+    g.strokeStyle='rgba(220,238,250,0.9)'; g.lineWidth=8;
     g.beginPath();g.moveTo(i,0);g.lineTo(i+H*1.1,H);g.stroke();
   }
-  g.restore();
 
   // ====== WHITE CARD ======
-  const P=30;
-  const cx=P, cy=86, cw=W-P*2, ch=H-cy-P;
+  const M=30; // margin
+  const cx=M, cy=88, cw=W-M*2, ch=H-cy-M;
   g.save();
   g.shadowColor='rgba(120,170,210,0.06)';g.shadowBlur=14;g.shadowOffsetY=2;
-  g.fillStyle='#ffffff';
-  rr(g,cx,cy,cw,ch,22); g.fill();
+  g.fillStyle='#ffffff'; rr(g,cx,cy,cw,ch,22); g.fill();
   g.restore();
 
   // ====== HEADER ======
-  g.textAlign='center'; g.textBaseline='alphabetic';
-  g.fillStyle='#b0cedf';
-  g.font="400 12px 'Zen Maru Gothic'";
+  g.textAlign='center';g.textBaseline='alphabetic';
+  g.fillStyle='#b0cedf'; g.font="400 12px 'Zen Maru Gothic'";
   g.fillText('L O V E   C L I N I C',W/2,32);
-
   g.font="900 40px 'Zen Maru Gothic'";
-  const hy=72;
   g.textAlign='left';
+  const hy=74;
   const w1=g.measureText('恋愛').width, wh=g.measureText('♡').width, w2=g.measureText('病院').width;
   const sp=10, tot=w1+wh+w2+sp*2, hsx=(W-tot)/2;
   g.fillStyle='#6aa7d4'; g.fillText('恋愛',hsx,hy);
@@ -155,54 +148,26 @@ function gen(){
   heartO(g,cx+6,cy-4,28,'rgba(155,205,240,0.45)',2);
   heartF(g,W-cx-10,cy-6,24,'rgba(155,205,240,0.35)');
   heartF(g,W-cx-42,cy+10,14,'rgba(155,205,240,0.22)');
-  heartF(g,cx+12,H-P+4,14,'rgba(185,165,210,0.3)');
-  heartO(g,W-cx-14,H-P+2,22,'rgba(155,205,240,0.35)',1.5);
+  heartF(g,cx+12,H-M+4,14,'rgba(185,165,210,0.3)');
+  heartO(g,W-cx-14,H-M+2,22,'rgba(155,205,240,0.35)',1.5);
 
-  // ====== LAYOUT CONSTANTS ======
-  const pad=44; // generous inner padding
-  const L=cx+pad, R=cx+cw-pad;
-  const FW=R-L; // full width
-  const MID=cx+cw/2;
-  const CL=L, CR=MID+20;
-  const CLW=MID-CL-20, CRW=R-CR;
+  // ====== INNER LAYOUT ======
+  const pad=46;
+  const L=cx+pad, R=cx+cw-pad, FW=R-L;
+  const MID=L+FW/2;
+  const CL=L, CR=MID+14;
+  const CLW=MID-CL-14, CRW=R-CR;
 
-  const lc='#7ab4d6'; // label
-  const vc='#1a1a1a'; // value
-  const dc='rgba(180,210,232,0.55)'; // divider (thin, subtle)
-
-  function label(t,lx,ly){
-    g.fillStyle=lc;
-    g.font="600 15px 'Zen Maru Gothic'"; // bigger, readable labels
-    g.textAlign='left';
-    g.fillText(t,lx,ly);
-  }
-
-  // Draw value and return the bottom Y of the last line
-  function val(t,vx,vy,mw,sz){
-    if(!t) return vy;
-    g.fillStyle=vc;
-    g.font="600 "+(sz||28)+"px '"+font+"','Zen Maru Gothic',sans-serif";
-    g.textAlign='left';
-    return wt(g,t,vx,vy,mw||300,(sz||28)+8);
-  }
-
-  // Horizontal line UNDER the answer
-  function uline(x1,x2,y){
-    g.strokeStyle=dc; g.lineWidth=1.2; g.setLineDash([]);
-    g.beginPath();g.moveTo(x1,y);g.lineTo(x2,y);g.stroke();
-  }
-  function vline(vx,y1,y2){
-    g.strokeStyle=dc; g.lineWidth=1; g.setLineDash([]);
-    g.beginPath();g.moveTo(vx,y1);g.lineTo(vx,y2);g.stroke();
-  }
+  const lc='#7ab4d6';
+  const vc='#1a1a1a';
+  const dc='rgba(170,205,228,0.55)';
 
   // ====== ICON ======
-  const ix=L, iy=cy+pad-8, iw=240, ih=240;
-  g.save();
-  rr(g,ix,iy,iw,ih,14); g.clip();
+  const ix=L, iy=cy+38, iw=235, ih=235;
+  g.save(); rr(g,ix,iy,iw,ih,14); g.clip();
   if(icon){
     const sc=Math.max(iw/icon.width,ih/icon.height);
-    const sw=icon.width*sc, sh=icon.height*sc;
+    const sw=icon.width*sc,sh=icon.height*sc;
     g.drawImage(icon,ix-(sw-iw)/2,iy-(sh-ih)/2,sw,sh);
   } else {
     g.fillStyle='#edf4fb';g.fillRect(ix,iy,iw,ih);
@@ -211,46 +176,65 @@ function gen(){
   }
   g.restore();
 
-  // ====== RIGHT SIDE: 3 rows beside icon ======
-  const rx=ix+iw+32, rw=R-rx;
-  g.textAlign='left';
+  // ====== HELPERS ======
+  function lab(t,x,y){
+    g.fillStyle=lc;
+    g.font="600 16px 'Zen Maru Gothic'";
+    g.textAlign='left';
+    g.fillText(t,x,y);
+  }
+  function ans(t,x,y,mw,sz){
+    if(!t) return y;
+    g.fillStyle=vc;
+    g.font="600 "+(sz||28)+"px '"+font+"','Zen Maru Gothic',sans-serif";
+    g.textAlign='left';
+    return wt(g,t,x,y,mw,(sz||28)+8);
+  }
+  function line(x1,x2,y){
+    g.strokeStyle=dc; g.lineWidth=1.2; g.setLineDash([]);
+    g.beginPath();g.moveTo(x1,y);g.lineTo(x2,y);g.stroke();
+  }
 
-  // Each right row: label at top, value below, line under value
-  // Zone heights (~80px each within 240px icon height)
-  const rz=ih/3;
+  // ====== RIGHT SIDE: beside icon ======
+  const rx=ix+iw+30, rw=R-rx;
+
+  // 3 rows beside icon, each ~78px
+  const rh=ih/3;
 
   // お名前
-  let zy=iy+4;
-  label('お名前',rx,zy+14);
-  let vBot=val(V('f_name'),rx,zy+48,rw,38);
-  uline(rx,R,vBot+14);
+  let y0=iy+6;
+  lab('お名前',rx,y0+16);
+  ans(V('f_name'),rx,y0+52,rw,38);
+  line(rx,R,y0+rh-4);
 
   // 年齢・出身
-  zy=iy+rz+4;
-  label('年齢・出身',rx,zy+14);
-  vBot=val(V('f_age')+'　'+V('f_from'),rx,zy+46,rw,32);
-  uline(rx,R,vBot+12);
+  y0=iy+rh+6;
+  lab('年齢・出身',rx,y0+16);
+  ans(V('f_age')+'　'+V('f_from'),rx,y0+50,rw,32);
+  line(rx,R,y0+rh-4);
 
   // 職業
-  zy=iy+rz*2+4;
-  label('職業',rx,zy+14);
-  vBot=val(V('f_job'),rx,zy+48,rw,36);
-  // No line at bottom (end of icon section)
+  y0=iy+rh*2+6;
+  lab('職業',rx,y0+16);
+  ans(V('f_job'),rx,y0+52,rw,34);
 
   // ====== TWO-COLUMN SECTION ======
-  const tcY=iy+ih+36;
-  // Top separator
-  uline(L,R,tcY);
+  // Section separator line (full width, under icon area)
+  const secY=iy+ih+30;
+  line(L,R,secY);
 
-  // Row config
-  const rows=[
-    {ll:'ラブタイプ',         rl:'ニックネーム',          ls:30, rs:30, h:100},
-    {ll:'好きなアーティスト',   rl:'子供の頃の夢',         ls:26, rs:28, h:100},
-    {ll:'趣味・特技',          rl:'恋愛における自分の強み', ls:24, rs:24, h:100},
-    {ll:'過去の恋愛失敗談',    rl:'恋愛偏差値',            ls:20, rs:42, h:116},
-    {ll:'番組内で自分のここをみて！',rl:'OA直前の気持ちは？',ls:26, rs:24, h:110},
+  // 5 rows, each with: label top-left, label top-right, answers, then line at bottom
+  // NO vertical line between columns, NO box borders
+  // Just horizontal lines between rows
+
+  const rowDefs=[
+    {ll:'ラブタイプ',           rl:'ニックネーム',          ls:30, rs:30},
+    {ll:'好きなアーティスト',     rl:'子供の頃の夢',         ls:26, rs:28},
+    {ll:'趣味・特技',            rl:'恋愛における自分の強み', ls:24, rs:24},
+    {ll:'過去の恋愛失敗談',      rl:'恋愛偏差値',           ls:20, rs:40},
+    {ll:'番組内で自分のここをみて！',rl:'OA直前の気持ちは？', ls:26, rs:24},
   ];
-  const vls=[
+  const rowVals=[
     [()=>V('f_love'), ()=>V('f_nick')],
     [()=>V('f_art'),  ()=>V('f_dream')],
     [()=>V('f_hobby'),()=>V('f_str')],
@@ -258,30 +242,34 @@ function gen(){
     [()=>V('f_watch'),()=>V('f_feel')],
   ];
 
-  let ry=tcY;
-  rows.forEach((row,i)=>{
-    const labY=ry+24;
-    const valY=ry+56;
+  // Fixed row height to keep consistent spacing
+  const rowH=108; // generous height per row
+  const lastRowH=108;
 
-    // Left
-    label(row.ll, CL, labY);
-    let lBot=val(vls[i][0](), CL, valY, CLW, row.ls);
+  let ry=secY;
 
-    // Vertical divider for this row
-    vline(MID, ry, ry+row.h);
+  rowDefs.forEach((row,i)=>{
+    const isLast=(i===rowDefs.length-1);
+    const h=isLast?lastRowH:rowH;
+    const labY=ry+26;  // label position
+    const valY=ry+60;  // answer position (good gap from label)
 
-    // Right
-    label(row.rl, CR, labY);
-    let rBot=val(vls[i][1](), CR, valY, CRW, row.rs);
+    // Left label + answer
+    lab(row.ll, CL, labY);
+    ans(rowVals[i][0](), CL, valY, CLW, row.ls);
 
-    ry+=row.h;
+    // Right label + answer
+    lab(row.rl, CR, labY);
+    ans(rowVals[i][1](), CR, valY, CRW, row.rs);
 
-    // Line UNDER answers (across full width) = bottom of this row
-    uline(L, R, ry);
+    ry+=h;
+
+    // Horizontal line at bottom of this row
+    line(L, R, ry);
   });
 
-  // ====== OUTPUT as <img> ======
-  document.getElementById('resultImg').src = c.toDataURL('image/png');
+  // ====== OUTPUT ======
+  document.getElementById('resultImg').src=c.toDataURL('image/png');
   document.getElementById('out').style.display='block';
   setTimeout(()=>document.getElementById('out').scrollIntoView({behavior:'smooth'}),80);
 }
@@ -301,16 +289,16 @@ function hp(g,cx,cy,s){
 }
 function heartF(g,cx,cy,s,c){g.save();g.fillStyle=c;hp(g,cx,cy,s);g.fill();g.restore()}
 function heartO(g,cx,cy,s,c,lw){g.save();g.strokeStyle=c;g.lineWidth=lw;hp(g,cx,cy,s);g.stroke();g.restore()}
-function wt(g,t,wx,wy,mw,lh){
-  let ln='',cy=wy;
+function wt(g,t,x,y,mw,lh){
+  let ln='',cy2=y;
   for(let i=0;i<t.length;i++){
-    if(t[i]==='\n'){g.fillText(ln,wx,cy);ln='';cy+=lh;continue}
+    if(t[i]==='\n'){g.fillText(ln,x,cy2);ln='';cy2+=lh;continue}
     const tl=ln+t[i];
-    if(g.measureText(tl).width>mw&&ln.length>0){g.fillText(ln,wx,cy);ln=t[i];cy+=lh}
+    if(g.measureText(tl).width>mw&&ln.length>0){g.fillText(ln,x,cy2);ln=t[i];cy2+=lh}
     else ln=tl;
   }
-  if(ln)g.fillText(ln,wx,cy);
-  return cy;
+  if(ln)g.fillText(ln,x,cy2);
+  return cy2;
 }
 </script>
 </body>
