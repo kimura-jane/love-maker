@@ -93,8 +93,7 @@ canvas{display:none}
 </div>
 
 <script>
-let font='Yomogi', icon=null;
-
+let font='Yomogi',icon=null;
 document.getElementById('iconI').addEventListener('change',e=>{
   const f=e.target.files[0];if(!f)return;
   const r=new FileReader();
@@ -106,7 +105,7 @@ function V(id){return document.getElementById(id).value||''}
 
 function gen(){
   const c=document.getElementById('cv'),g=c.getContext('2d');
-  const W=960,H=1280,S=2;
+  const W=960,H=1340,S=2;
   c.width=W*S;c.height=H*S;
   g.scale(S,S);
 
@@ -119,11 +118,11 @@ function gen(){
   }
 
   // ===== WHITE CARD =====
-  const cardM=34;
-  const cardX=cardM,cardY=92,cardW=W-cardM*2,cardH=H-cardY-cardM;
+  const cM=34;
+  const cX=cM,cY=92,cW=W-cM*2,cH=H-cY-cM;
   g.save();
   g.shadowColor='rgba(120,170,210,0.06)';g.shadowBlur=14;g.shadowOffsetY=2;
-  g.fillStyle='#ffffff';rr(g,cardX,cardY,cardW,cardH,24);g.fill();
+  g.fillStyle='#fff';rr(g,cX,cY,cW,cH,24);g.fill();
   g.restore();
 
   // ===== HEADER =====
@@ -132,57 +131,62 @@ function gen(){
   g.fillText('L O V E   C L I N I C',W/2,34);
   g.font="900 42px 'Zen Maru Gothic'";
   const hy=78;g.textAlign='left';
-  const w1=g.measureText('恋愛').width,wh=g.measureText('♡').width,w2=g.measureText('病院').width;
-  const sp=10,tot=w1+wh+w2+sp*2,hsx=(W-tot)/2;
-  g.fillStyle='#6aa7d4';g.fillText('恋愛',hsx,hy);
-  g.fillStyle='#e88fb8';g.fillText('♡',hsx+w1+sp,hy);
-  g.fillStyle='#6aa7d4';g.fillText('病院',hsx+w1+wh+sp*2,hy);
+  const tw1=g.measureText('恋愛').width,twh=g.measureText('♡').width,tw2=g.measureText('病院').width;
+  const tsp=10,ttot=tw1+twh+tw2+tsp*2,tsx=(W-ttot)/2;
+  g.fillStyle='#6aa7d4';g.fillText('恋愛',tsx,hy);
+  g.fillStyle='#e88fb8';g.fillText('♡',tsx+tw1+tsp,hy);
+  g.fillStyle='#6aa7d4';g.fillText('病院',tsx+tw1+twh+tsp*2,hy);
 
   // ===== HEARTS =====
-  heartO(g,cardX+4,cardY-6,30,'rgba(155,205,240,0.45)',2);
-  heartF(g,W-cardX-8,cardY-8,26,'rgba(155,205,240,0.35)');
-  heartF(g,W-cardX-42,cardY+8,15,'rgba(155,205,240,0.22)');
-  heartF(g,cardX+10,H-cardM+6,15,'rgba(185,165,215,0.3)');
-  heartO(g,W-cardX-12,H-cardM+4,24,'rgba(155,205,240,0.35)',1.5);
+  heartO(g,cX+4,cY-6,30,'rgba(155,205,240,0.45)',2);
+  heartF(g,W-cX-8,cY-8,26,'rgba(155,205,240,0.35)');
+  heartF(g,W-cX-42,cY+8,15,'rgba(155,205,240,0.22)');
+  heartF(g,cX+10,H-cM+6,15,'rgba(185,165,215,0.3)');
+  heartO(g,W-cX-12,H-cM+4,24,'rgba(155,205,240,0.35)',1.5);
 
-  // ===== INNER LAYOUT =====
-  const pad=48;
-  const L=cardX+pad,R=cardX+cardW-pad,FW=R-L;
+  // ===== LAYOUT =====
+  const pad=50;
+  const L=cX+pad,R=cX+cW-pad,FW=R-L;
   const MID=L+FW/2;
-  const CL=L,CR=MID+16;
-  const CLW=MID-CL-16,CRW=R-CR;
+  const CL=L,CR=MID+18;
+  const CLW=MID-CL-18,CRW=R-CR;
 
-  const lc='#6aaad0';  // label color
-  const vc='#1a1a1a';  // value color
-  const dc='rgba(175,210,230,0.50)'; // line color
+  const lc='#5ea8cc';  // label color - stronger blue
+  const vc='#1a1a1a';
+  const dc='rgba(175,210,230,0.50)';
 
   // ===== ICON + RIGHT 3 ROWS =====
-  // Key: icon height = total height of 3 rows
-  const iconX=L,iconY=cardY+pad;
-  const rowH3=90; // each of the 3 right rows
-  const iconSize=rowH3*3; // icon = 3 rows height = 270
-  const iconW=iconSize,iconH=iconSize;
+  const iconX=L,iconY=cY+pad;
+  const rowH3=100; // each right row height
+  const iconSz=rowH3*3; // 300px = icon matches 3 rows exactly
 
   // Draw icon
-  g.save();rr(g,iconX,iconY,iconW,iconH,16);g.clip();
+  g.save();rr(g,iconX,iconY,iconSz,iconSz,16);g.clip();
   if(icon){
-    const sc=Math.max(iconW/icon.width,iconH/icon.height);
+    const sc=Math.max(iconSz/icon.width,iconSz/icon.height);
     const sw=icon.width*sc,sh=icon.height*sc;
-    g.drawImage(icon,iconX-(sw-iconW)/2,iconY-(sh-iconH)/2,sw,sh);
+    g.drawImage(icon,iconX-(sw-iconSz)/2,iconY-(sh-iconSz)/2,sw,sh);
   }else{
-    g.fillStyle='#edf4fb';g.fillRect(iconX,iconY,iconW,iconH);
+    g.fillStyle='#edf4fb';g.fillRect(iconX,iconY,iconSz,iconSz);
     g.fillStyle='#a0c2da';g.font="500 15px 'Zen Maru Gothic'";
-    g.textAlign='center';g.fillText('No Image',iconX+iconW/2,iconY+iconH/2+5);
+    g.textAlign='center';g.fillText('No Image',iconX+iconSz/2,iconY+iconSz/2+5);
   }
   g.restore();
 
-  // Right column start
-  const rx=iconX+iconW+32,rw=R-rx;
+  const rx=iconX+iconSz+34,rw=R-rx;
   g.textAlign='left';
 
-  function lab(t,lx,ly){
+  // Label: 24px bold - much bigger and readable
+  function labTop(t,lx,ly){
     g.fillStyle=lc;
-    g.font="700 18px 'Zen Maru Gothic'";
+    g.font="700 22px 'Zen Maru Gothic'";
+    g.textAlign='left';
+    g.fillText(t,lx,ly);
+  }
+  // Label for 2-col section: even bigger
+  function labBig(t,lx,ly){
+    g.fillStyle=lc;
+    g.font="700 24px 'Zen Maru Gothic'";
     g.textAlign='left';
     g.fillText(t,lx,ly);
   }
@@ -200,35 +204,33 @@ function gen(){
 
   // Row 1: お名前
   let ry0=iconY;
-  lab('お名前',rx,ry0+22);
-  ans(V('f_name'),rx,ry0+58,rw,38);
+  labTop('お名前',rx,ry0+24);
+  ans(V('f_name'),rx,ry0+62,rw,38);
   hln(rx,R,ry0+rowH3);
 
   // Row 2: 年齢・出身
   let ry1=iconY+rowH3;
-  lab('年齢・出身',rx,ry1+22);
-  ans(V('f_age')+'　'+V('f_from'),rx,ry1+58,rw,32);
+  labTop('年齢・出身',rx,ry1+24);
+  ans(V('f_age')+'　'+V('f_from'),rx,ry1+62,rw,32);
   hln(rx,R,ry1+rowH3);
 
   // Row 3: 職業
   let ry2=iconY+rowH3*2;
-  lab('職業',rx,ry2+22);
-  ans(V('f_job'),rx,ry2+58,rw,34);
+  labTop('職業',rx,ry2+24);
+  ans(V('f_job'),rx,ry2+62,rw,36);
 
-  // ===== SECTION DIVIDER (full width, under icon area) =====
-  const secDivY=iconY+iconH+24;
-  hln(L,R,secDivY);
+  // ===== SECTION LINE =====
+  const secY=iconY+iconSz+28;
+  hln(L,R,secY);
 
-  // ===== TWO-COLUMN ROWS (no vertical lines, only horizontal) =====
-  const twoRowH=104;
-  const bigRowH=118; // for rows with larger text or more content
-
+  // ===== 2-COL ROWS =====
+  const rH=116; // generous row height
   const rows=[
-    {ll:'ラブタイプ',            rl:'ニックネーム',           ls:30,rs:30,h:twoRowH},
-    {ll:'好きなアーティスト',      rl:'子供の頃の夢',          ls:26,rs:28,h:twoRowH},
-    {ll:'趣味・特技',             rl:'恋愛における自分の強み',  ls:24,rs:24,h:twoRowH},
-    {ll:'過去の恋愛失敗談',       rl:'恋愛偏差値',            ls:20,rs:42,h:bigRowH},
-    {ll:'番組内で自分のここをみて！',rl:'OA直前の気持ちは？',   ls:26,rs:24,h:bigRowH},
+    {ll:'ラブタイプ',            rl:'ニックネーム',           ls:32,rs:32},
+    {ll:'好きなアーティスト',      rl:'子供の頃の夢',          ls:28,rs:30},
+    {ll:'趣味・特技',             rl:'恋愛における自分の強み',  ls:26,rs:26},
+    {ll:'過去の恋愛失敗談',       rl:'恋愛偏差値',            ls:22,rs:44},
+    {ll:'番組内で自分のここをみて！',rl:'OA直前の気持ちは？',   ls:28,rs:26},
   ];
   const vls=[
     [()=>V('f_love'),()=>V('f_nick')],
@@ -238,26 +240,23 @@ function gen(){
     [()=>V('f_watch'),()=>V('f_feel')],
   ];
 
-  let ry=secDivY;
+  let ry=secY;
   rows.forEach((row,i)=>{
-    const labY=ry+28;
-    const valY=ry+60;
+    const labY=ry+32;
+    const valY=ry+70;
 
-    // Left
-    lab(row.ll,CL,labY);
+    labBig(row.ll,CL,labY);
     ans(vls[i][0](),CL,valY,CLW,row.ls);
 
-    // Right
-    lab(row.rl,CR,labY);
+    labBig(row.rl,CR,labY);
     ans(vls[i][1](),CR,valY,CRW,row.rs);
 
-    ry+=row.h;
+    ry+=rH;
     hln(L,R,ry);
   });
 
-  // Bottom area below last line = generous whitespace until card bottom
-  // (card bottom is at cardY+cardH, last line is at ry)
-  // The remaining space is the "bottom margin" — we sized H to ensure this is large
+  // After last line, there's generous bottom whitespace to card edge
+  // cY+cH = card bottom. ry = last line. Difference = bottom margin.
 
   // ===== OUTPUT =====
   document.getElementById('resultImg').src=c.toDataURL('image/png');
@@ -265,7 +264,6 @@ function gen(){
   setTimeout(()=>document.getElementById('out').scrollIntoView({behavior:'smooth'}),80);
 }
 
-// ===== UTILS =====
 function rr(g,a,b,w,h,r){
   g.beginPath();g.moveTo(a+r,b);g.lineTo(a+w-r,b);g.quadraticCurveTo(a+w,b,a+w,b+r);
   g.lineTo(a+w,b+h-r);g.quadraticCurveTo(a+w,b+h,a+w-r,b+h);g.lineTo(a+r,b+h);
