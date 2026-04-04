@@ -6,7 +6,7 @@
 <title>恋愛病院カルテメーカー</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@300;400;500;700;900&family=Klee+One:wght@400;600&family=Yuji+Syuku&family=Zen+Kurenaido&family=Yomogi&family=Kaisei+Opti:wght@400;700&family=Reggae+One&family=Hachi+Maru+Pop&family=Zen+Antique+Soft&family=M+PLUS+Rounded+1c:wght@400;700;800;900&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@400;500;700;900&family=Klee+One:wght@400;600&family=Yuji+Syuku&family=Zen+Kurenaido&family=Yomogi&family=Kaisei+Opti:wght@400;700&family=Reggae+One&family=Hachi+Maru+Pop&family=Zen+Antique+Soft&family=M+PLUS+Rounded+1c:wght@400;700;800;900&display=swap" rel="stylesheet">
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 body{font-family:'Zen Maru Gothic',sans-serif;background:linear-gradient(135deg,#e3f0fa,#eee8f5,#fbe4ec);min-height:100vh;padding:16px}
@@ -40,6 +40,7 @@ body{font-family:'Zen Maru Gothic',sans-serif;background:linear-gradient(135deg,
 .out p.hint{color:#aaa;font-size:.72rem;margin-top:8px}
 #resultImg{max-width:100%;border-radius:10px;box-shadow:0 6px 24px rgba(90,140,200,.15)}
 canvas{display:none}
+.loading{display:none;text-align:center;padding:20px;color:#6aa7d4}
 @media(max-width:540px){.r2{grid-template-columns:1fr}.fs{grid-template-columns:repeat(2,1fr)}.title h1{font-size:1.35rem}.card{padding:16px}}
 </style>
 </head>
@@ -83,6 +84,7 @@ canvas{display:none}
 </div>
 
 <button class="btn" onclick="gen()">♡ カルテを生成する ♡</button>
+<div class="loading" id="loading">⏳ 生成中...</div>
 
 <div class="out" id="out">
 <h2>完成したカルテ</h2>
@@ -94,6 +96,12 @@ canvas{display:none}
 
 <script>
 let font='Yomogi',icon=null;
+
+// テンプレート画像を事前読み込み
+const tpl=new Image();
+tpl.crossOrigin='anonymous';
+tpl.src='file_1775346015567.jpeg';
+
 document.getElementById('iconI').addEventListener('change',e=>{
   const f=e.target.files[0];if(!f)return;
   const r=new FileReader();
@@ -104,164 +112,114 @@ function sf(el){document.querySelectorAll('.fo').forEach(o=>o.classList.remove('
 function V(id){return document.getElementById(id).value||''}
 
 function gen(){
+  if(!tpl.complete||!tpl.naturalWidth){
+    alert('テンプレート画像を読み込み中です。少し待ってからもう一度押してください。');
+    return;
+  }
+
+  document.getElementById('loading').style.display='block';
+
+  // テンプレート画像の実サイズを使う
+  const W=tpl.naturalWidth, H=tpl.naturalHeight;
   const c=document.getElementById('cv'),g=c.getContext('2d');
-  const W=960,H=1340,S=2;
-  c.width=W*S;c.height=H*S;
-  g.scale(S,S);
+  c.width=W; c.height=H;
 
-  // ===== BG =====
-  g.fillStyle='#d8ebf6';
-  g.fillRect(0,0,W,H);
-  for(let i=-H*2;i<W+H*2;i+=16){
-    g.strokeStyle='rgba(218,237,250,0.9)';g.lineWidth=9;
-    g.beginPath();g.moveTo(i,0);g.lineTo(i+H*1.1,H);g.stroke();
-  }
+  // テンプレートをそのまま描画
+  g.drawImage(tpl,0,0,W,H);
 
-  // ===== WHITE CARD =====
-  const cM=34;
-  const cX=cM,cY=92,cW=W-cM*2,cH=H-cY-cM;
-  g.save();
-  g.shadowColor='rgba(120,170,210,0.06)';g.shadowBlur=14;g.shadowOffsetY=2;
-  g.fillStyle='#fff';rr(g,cX,cY,cW,cH,24);g.fill();
-  g.restore();
+  // 座標はテンプレート画像のサイズに対する比率で計算
+  // テンプレート画像を見て座標を割り出す
+  // 比率ベースで計算（画像幅を1.0として）
+  const s=W; // scale base
 
-  // ===== HEADER =====
-  g.textAlign='center';g.textBaseline='alphabetic';
-  g.fillStyle='#aecfdf';g.font="400 13px 'Zen Maru Gothic'";
-  g.fillText('L O V E   C L I N I C',W/2,34);
-  g.font="900 42px 'Zen Maru Gothic'";
-  const hy=78;g.textAlign='left';
-  const tw1=g.measureText('恋愛').width,twh=g.measureText('♡').width,tw2=g.measureText('病院').width;
-  const tsp=10,ttot=tw1+twh+tw2+tsp*2,tsx=(W-ttot)/2;
-  g.fillStyle='#6aa7d4';g.fillText('恋愛',tsx,hy);
-  g.fillStyle='#e88fb8';g.fillText('♡',tsx+tw1+tsp,hy);
-  g.fillStyle='#6aa7d4';g.fillText('病院',tsx+tw1+twh+tsp*2,hy);
+  // ----- アイコン -----
+  // テンプレートの左上の角丸四角エリア
+  const iconArea={
+    x: W*0.052,
+    y: H*0.068,
+    w: W*0.335,
+    h: W*0.335  // 正方形
+  };
 
-  // ===== HEARTS =====
-  heartO(g,cX+4,cY-6,30,'rgba(155,205,240,0.45)',2);
-  heartF(g,W-cX-8,cY-8,26,'rgba(155,205,240,0.35)');
-  heartF(g,W-cX-42,cY+8,15,'rgba(155,205,240,0.22)');
-  heartF(g,cX+10,H-cM+6,15,'rgba(185,165,215,0.3)');
-  heartO(g,W-cX-12,H-cM+4,24,'rgba(155,205,240,0.35)',1.5);
-
-  // ===== LAYOUT =====
-  const pad=50;
-  const L=cX+pad,R=cX+cW-pad,FW=R-L;
-  const MID=L+FW/2;
-  const CL=L,CR=MID+18;
-  const CLW=MID-CL-18,CRW=R-CR;
-
-  const lc='#5ea8cc';  // label color - stronger blue
-  const vc='#1a1a1a';
-  const dc='rgba(175,210,230,0.50)';
-
-  // ===== ICON + RIGHT 3 ROWS =====
-  const iconX=L,iconY=cY+pad;
-  const rowH3=100; // each right row height
-  const iconSz=rowH3*3; // 300px = icon matches 3 rows exactly
-
-  // Draw icon
-  g.save();rr(g,iconX,iconY,iconSz,iconSz,16);g.clip();
   if(icon){
-    const sc=Math.max(iconSz/icon.width,iconSz/icon.height);
-    const sw=icon.width*sc,sh=icon.height*sc;
-    g.drawImage(icon,iconX-(sw-iconSz)/2,iconY-(sh-iconSz)/2,sw,sh);
-  }else{
-    g.fillStyle='#edf4fb';g.fillRect(iconX,iconY,iconSz,iconSz);
-    g.fillStyle='#a0c2da';g.font="500 15px 'Zen Maru Gothic'";
-    g.textAlign='center';g.fillText('No Image',iconX+iconSz/2,iconY+iconSz/2+5);
+    g.save();
+    rr(g, iconArea.x, iconArea.y, iconArea.w, iconArea.h, W*0.018);
+    g.clip();
+    const sc=Math.max(iconArea.w/icon.width, iconArea.h/icon.height);
+    const sw=icon.width*sc, sh=icon.height*sc;
+    g.drawImage(icon,
+      iconArea.x-(sw-iconArea.w)/2,
+      iconArea.y-(sh-iconArea.h)/2,
+      sw, sh);
+    g.restore();
   }
-  g.restore();
 
-  const rx=iconX+iconSz+34,rw=R-rx;
+  // ----- テキスト描画設定 -----
+  const vc='#1a1a1a';
+  g.fillStyle=vc;
   g.textAlign='left';
+  g.textBaseline='alphabetic';
 
-  // Label: 24px bold - much bigger and readable
-  function labTop(t,lx,ly){
-    g.fillStyle=lc;
-    g.font="700 22px 'Zen Maru Gothic'";
-    g.textAlign='left';
-    g.fillText(t,lx,ly);
-  }
-  // Label for 2-col section: even bigger
-  function labBig(t,lx,ly){
-    g.fillStyle=lc;
-    g.font="700 24px 'Zen Maru Gothic'";
-    g.textAlign='left';
-    g.fillText(t,lx,ly);
-  }
-  function ans(t,ax,ay,mw,sz){
-    if(!t)return ay;
-    g.fillStyle=vc;
-    g.font="600 "+(sz||28)+"px '"+font+"','Zen Maru Gothic',sans-serif";
-    g.textAlign='left';
-    return wt(g,t,ax,ay,mw,(sz||28)+8);
-  }
-  function hln(x1,x2,y){
-    g.strokeStyle=dc;g.lineWidth=1.2;g.setLineDash([]);
-    g.beginPath();g.moveTo(x1,y);g.lineTo(x2,y);g.stroke();
-  }
+  // 右側3段の回答テキスト座標（ラベルの下、罫線の上）
+  const rx=W*0.435; // 回答テキストの左端x
+  const rMaxW=W*0.52; // 回答テキストの最大幅
 
-  // Row 1: お名前
-  let ry0=iconY;
-  labTop('お名前',rx,ry0+24);
-  ans(V('f_name'),rx,ry0+62,rw,38);
-  hln(rx,R,ry0+rowH3);
+  // お名前
+  setFont(g, W*0.042);
+  wt(g, V('f_name'), rx, H*0.108, rMaxW, W*0.05);
 
-  // Row 2: 年齢・出身
-  let ry1=iconY+rowH3;
-  labTop('年齢・出身',rx,ry1+24);
-  ans(V('f_age')+'　'+V('f_from'),rx,ry1+62,rw,32);
-  hln(rx,R,ry1+rowH3);
+  // 年齢・出身
+  setFont(g, W*0.036);
+  wt(g, V('f_age')+'　'+V('f_from'), rx, H*0.188, rMaxW, W*0.044);
 
-  // Row 3: 職業
-  let ry2=iconY+rowH3*2;
-  labTop('職業',rx,ry2+24);
-  ans(V('f_job'),rx,ry2+62,rw,36);
+  // 職業
+  setFont(g, W*0.038);
+  wt(g, V('f_job'), rx, H*0.272, rMaxW, W*0.046);
 
-  // ===== SECTION LINE =====
-  const secY=iconY+iconSz+28;
-  hln(L,R,secY);
+  // ----- 2カラム部分 -----
+  const colL=W*0.052;  // 左列x
+  const colR=W*0.50;   // 右列x
+  const colLW=W*0.40;  // 左列最大幅
+  const colRW=W*0.44;  // 右列最大幅
 
-  // ===== 2-COL ROWS =====
-  const rH=116; // generous row height
-  const rows=[
-    {ll:'ラブタイプ',            rl:'ニックネーム',           ls:32,rs:32},
-    {ll:'好きなアーティスト',      rl:'子供の頃の夢',          ls:28,rs:30},
-    {ll:'趣味・特技',             rl:'恋愛における自分の強み',  ls:26,rs:26},
-    {ll:'過去の恋愛失敗談',       rl:'恋愛偏差値',            ls:22,rs:44},
-    {ll:'番組内で自分のここをみて！',rl:'OA直前の気持ちは？',   ls:28,rs:26},
-  ];
-  const vls=[
-    [()=>V('f_love'),()=>V('f_nick')],
-    [()=>V('f_art'),()=>V('f_dream')],
-    [()=>V('f_hobby'),()=>V('f_str')],
-    [()=>V('f_fail'),()=>V('f_dev')],
-    [()=>V('f_watch'),()=>V('f_feel')],
-  ];
+  // 各行の回答y座標（ラベルの下、罫線の上）
+  // ラブタイプ / ニックネーム
+  setFont(g, W*0.034);
+  wt(g, V('f_love'), colL, H*0.395, colLW, W*0.042);
+  wt(g, V('f_nick'), colR, H*0.395, colRW, W*0.042);
 
-  let ry=secY;
-  rows.forEach((row,i)=>{
-    const labY=ry+32;
-    const valY=ry+70;
+  // 好きなアーティスト / 子供の頃の夢
+  setFont(g, W*0.030);
+  wt(g, V('f_art'), colL, H*0.485, colLW, W*0.038);
+  wt(g, V('f_dream'), colR, H*0.485, colRW, W*0.038);
 
-    labBig(row.ll,CL,labY);
-    ans(vls[i][0](),CL,valY,CLW,row.ls);
+  // 趣味・特技 / 恋愛における自分の強み
+  setFont(g, W*0.028);
+  wt(g, V('f_hobby'), colL, H*0.578, colLW, W*0.036);
+  wt(g, V('f_str'), colR, H*0.578, colRW, W*0.036);
 
-    labBig(row.rl,CR,labY);
-    ans(vls[i][1](),CR,valY,CRW,row.rs);
+  // 過去の恋愛失敗談 / 恋愛偏差値
+  setFont(g, W*0.024);
+  wt(g, V('f_fail'), colL, H*0.672, colLW, W*0.032);
+  setFont(g, W*0.046);
+  wt(g, V('f_dev'), colR, H*0.680, colRW, W*0.054);
 
-    ry+=rH;
-    hln(L,R,ry);
-  });
+  // 番組内で自分のここをみて！ / OA直前の気持ちは？
+  setFont(g, W*0.030);
+  wt(g, V('f_watch'), colL, H*0.775, colLW, W*0.038);
+  setFont(g, W*0.028);
+  wt(g, V('f_feel'), colR, H*0.775, colRW, W*0.036);
 
-  // After last line, there's generous bottom whitespace to card edge
-  // cY+cH = card bottom. ry = last line. Difference = bottom margin.
-
-  // ===== OUTPUT =====
+  // 出力
   document.getElementById('resultImg').src=c.toDataURL('image/png');
   document.getElementById('out').style.display='block';
+  document.getElementById('loading').style.display='none';
   setTimeout(()=>document.getElementById('out').scrollIntoView({behavior:'smooth'}),80);
+}
+
+function setFont(g,sz){
+  g.fillStyle='#1a1a1a';
+  g.font="600 "+Math.round(sz)+"px '"+font+"','Zen Maru Gothic',sans-serif";
 }
 
 function rr(g,a,b,w,h,r){
@@ -269,25 +227,18 @@ function rr(g,a,b,w,h,r){
   g.lineTo(a+w,b+h-r);g.quadraticCurveTo(a+w,b+h,a+w-r,b+h);g.lineTo(a+r,b+h);
   g.quadraticCurveTo(a,b+h,a,b+h-r);g.lineTo(a,b+r);g.quadraticCurveTo(a,b,a+r,b);g.closePath();
 }
-function hp(g,cx,cy,s){
-  g.beginPath();g.moveTo(cx,cy+s*.3);
-  g.bezierCurveTo(cx,cy,cx-s*.5,cy,cx-s*.5,cy+s*.3);
-  g.bezierCurveTo(cx-s*.5,cy+s*.7,cx,cy+s*.85,cx,cy+s);
-  g.bezierCurveTo(cx,cy+s*.85,cx+s*.5,cy+s*.7,cx+s*.5,cy+s*.3);
-  g.bezierCurveTo(cx+s*.5,cy,cx,cy,cx,cy+s*.3);g.closePath();
-}
-function heartF(g,cx,cy,s,c){g.save();g.fillStyle=c;hp(g,cx,cy,s);g.fill();g.restore()}
-function heartO(g,cx,cy,s,c,lw){g.save();g.strokeStyle=c;g.lineWidth=lw;hp(g,cx,cy,s);g.stroke();g.restore()}
+
 function wt(g,t,x,y,mw,lh){
-  let ln='',cy2=y;
+  if(!t)return y;
+  let ln='',cy=y;
   for(let i=0;i<t.length;i++){
-    if(t[i]==='\n'){g.fillText(ln,x,cy2);ln='';cy2+=lh;continue}
+    if(t[i]==='\n'){g.fillText(ln,x,cy);ln='';cy+=lh;continue}
     const tl=ln+t[i];
-    if(g.measureText(tl).width>mw&&ln.length>0){g.fillText(ln,x,cy2);ln=t[i];cy2+=lh}
+    if(g.measureText(tl).width>mw&&ln.length>0){g.fillText(ln,x,cy);ln=t[i];cy+=lh}
     else ln=tl;
   }
-  if(ln)g.fillText(ln,x,cy2);
-  return cy2;
+  if(ln)g.fillText(ln,x,cy);
+  return cy;
 }
 </script>
 </body>
