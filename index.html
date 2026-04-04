@@ -9,80 +9,44 @@
 <link href="https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@300;400;500;700;900&family=Klee+One:wght@400;600&family=Yuji+Syuku&family=Zen+Kurenaido&family=Yomogi&family=Kaisei+Opti:wght@400;700&family=Reggae+One&family=Hachi+Maru+Pop&family=Zen+Antique+Soft&family=M+PLUS+Rounded+1c:wght@400;700;800;900&display=swap" rel="stylesheet">
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
-body{
-  font-family:'Zen Maru Gothic','M PLUS Rounded 1c',sans-serif;
-  background:linear-gradient(135deg,#e3f0fa 0%,#eee8f5 50%,#fbe4ec 100%);
-  min-height:100vh;padding:16px;
-}
+body{font-family:'Zen Maru Gothic',sans-serif;background:linear-gradient(135deg,#e3f0fa,#eee8f5,#fbe4ec);min-height:100vh;padding:16px}
 .wrap{max-width:640px;margin:0 auto}
-.title{text-align:center;margin-bottom:24px}
+.title{text-align:center;margin-bottom:22px}
 .title small{color:#a3c8e2;font-size:.7rem;letter-spacing:3px;display:block;margin-bottom:2px}
 .title h1{font-size:1.7rem;color:#6aa7d4;letter-spacing:1px}
 .title h1 b{color:#e88fb8;font-weight:900}
-.desc{text-align:center;color:#b0b0b0;font-size:.78rem;margin-bottom:22px}
-
-.card{background:#fff;border-radius:18px;padding:22px 24px;margin-bottom:18px;box-shadow:0 3px 14px rgba(90,140,200,.08)}
+.desc{text-align:center;color:#b0b0b0;font-size:.78rem;margin-bottom:20px}
+.card{background:#fff;border-radius:18px;padding:22px 24px;margin-bottom:16px;box-shadow:0 3px 14px rgba(90,140,200,.08)}
 .card h2{color:#6aa7d4;font-size:1.05rem;margin-bottom:14px;padding-bottom:8px;border-bottom:2px dashed #d4e6f4}
 .g{margin-bottom:13px}
 .g label{display:block;font-weight:700;color:#6aa7d4;font-size:.82rem;margin-bottom:3px}
-.g input,.g textarea{
-  width:100%;padding:9px 12px;border:2px solid #d4e6f4;border-radius:10px;
-  font-size:.92rem;font-family:inherit;background:#fafcff;transition:border .2s;
-}
+.g input,.g textarea{width:100%;padding:9px 12px;border:2px solid #d4e6f4;border-radius:10px;font-size:.92rem;font-family:inherit;background:#fafcff;transition:border .2s}
 .g input:focus,.g textarea:focus{outline:none;border-color:#7bb8df;background:#fff}
 .g textarea{height:50px;resize:vertical}
 .r2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-
 .iu{display:flex;align-items:center;gap:14px}
-.ip{
-  width:84px;height:84px;border-radius:12px;background:#eaf3fb;
-  display:flex;align-items:center;justify-content:center;overflow:hidden;
-  border:2.5px dashed #a8ceea;flex-shrink:0;cursor:pointer;
-}
+.ip{width:84px;height:84px;border-radius:12px;background:#eaf3fb;display:flex;align-items:center;justify-content:center;overflow:hidden;border:2.5px dashed #a8ceea;flex-shrink:0;cursor:pointer}
 .ip:hover{border-color:#6aa7d4}
 .ip img{width:100%;height:100%;object-fit:cover}
 .ip .ph{color:#9ec5e2;font-size:.65rem;text-align:center;line-height:1.3}
-
 .fs{display:grid;grid-template-columns:repeat(auto-fill,minmax(115px,1fr));gap:6px}
-.fo{
-  padding:8px 4px;border:2px solid #e0eaf3;border-radius:10px;text-align:center;
-  cursor:pointer;transition:all .2s;background:#fff;
-}
+.fo{padding:8px 4px;border:2px solid #e0eaf3;border-radius:10px;text-align:center;cursor:pointer;transition:all .2s;background:#fff}
 .fo:hover{border-color:#88bade;background:#f0f7ff}
 .fo.on{border-color:#6aa7d4;background:#e3f1fb;box-shadow:0 0 0 2px rgba(106,167,212,.2)}
 .fo .nm{font-size:.58rem;color:#aaa;margin-top:2px}
-
-.btn{
-  display:block;width:100%;padding:14px;
-  background:linear-gradient(135deg,#7cb8e6,#b3a5d8,#e88fb8);
-  color:#fff;border:none;border-radius:14px;font-size:1.1rem;font-weight:900;
-  font-family:inherit;cursor:pointer;letter-spacing:2px;
-  box-shadow:0 4px 14px rgba(90,140,200,.25);transition:transform .15s,box-shadow .15s;
-}
+.btn{display:block;width:100%;padding:14px;background:linear-gradient(135deg,#7cb8e6,#b3a5d8,#e88fb8);color:#fff;border:none;border-radius:14px;font-size:1.1rem;font-weight:900;font-family:inherit;cursor:pointer;letter-spacing:2px;box-shadow:0 4px 14px rgba(90,140,200,.25);transition:transform .15s,box-shadow .15s}
 .btn:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(90,140,200,.32)}
-
 .out{display:none;margin-top:22px;text-align:center}
 .out h2{color:#6aa7d4;margin-bottom:10px;font-size:1rem}
 .out p.hint{color:#aaa;font-size:.72rem;margin-top:8px}
 #resultImg{max-width:100%;border-radius:10px;box-shadow:0 6px 24px rgba(90,140,200,.15)}
-
 canvas{display:none}
-
-@media(max-width:540px){
-  .r2{grid-template-columns:1fr}
-  .fs{grid-template-columns:repeat(2,1fr)}
-  .title h1{font-size:1.35rem}
-  .card{padding:16px}
-}
+@media(max-width:540px){.r2{grid-template-columns:1fr}.fs{grid-template-columns:repeat(2,1fr)}.title h1{font-size:1.35rem}.card{padding:16px}}
 </style>
 </head>
 <body>
 <div class="wrap">
-
-<div class="title">
-  <small>L O V E  C L I N I C</small>
-  <h1>恋愛<b>♡</b>病院</h1>
-</div>
+<div class="title"><small>L O V E  C L I N I C</small><h1>恋愛<b>♡</b>病院</h1></div>
 <p class="desc">カルテメーカー ─ あなたの恋愛カルテを作ろう！</p>
 
 <div class="card">
@@ -96,31 +60,13 @@ canvas{display:none}
 <div class="card">
 <h2>📝 プロフィール</h2>
 <div class="g"><label>お名前</label><input id="f_name" placeholder="桑田 能征"></div>
-<div class="r2">
-  <div class="g"><label>年齢</label><input id="f_age" placeholder="40歳"></div>
-  <div class="g"><label>出身地</label><input id="f_from" placeholder="大阪府"></div>
-</div>
+<div class="r2"><div class="g"><label>年齢</label><input id="f_age" placeholder="40歳"></div><div class="g"><label>出身地</label><input id="f_from" placeholder="大阪府"></div></div>
 <div class="g"><label>職業</label><input id="f_job" placeholder="実業家"></div>
-<div class="r2">
-  <div class="g"><label>ラブタイプ</label><input id="f_love" placeholder="憧れの先輩"></div>
-  <div class="g"><label>ニックネーム</label><input id="f_nick" placeholder="りゅーびー"></div>
-</div>
-<div class="r2">
-  <div class="g"><label>好きなアーティスト</label><input id="f_art" placeholder="Mrs. GREEN APPLE"></div>
-  <div class="g"><label>子供の頃の夢</label><input id="f_dream" placeholder="サッカー選手"></div>
-</div>
-<div class="r2">
-  <div class="g"><label>趣味・特技</label><input id="f_hobby" placeholder="サッカー, スノボ, バイオリン"></div>
-  <div class="g"><label>恋愛における自分の強み</label><input id="f_str" placeholder="牽引力 ぐいぐい引っぱる！"></div>
-</div>
-<div class="r2">
-  <div class="g"><label>過去の恋愛失敗談</label><textarea id="f_fail" placeholder="仕事を追うことに夢中になっておざなりにしてしまった"></textarea></div>
-  <div class="g"><label>恋愛偏差値</label><input id="f_dev" placeholder="40〜45"></div>
-</div>
-<div class="r2">
-  <div class="g"><label>番組内で自分のここをみて！</label><textarea id="f_watch" placeholder="輪で楽しめるとこ。"></textarea></div>
-  <div class="g"><label>OA直前の気持ちは？</label><textarea id="f_feel" placeholder="誰が病人なんだ！！"></textarea></div>
-</div>
+<div class="r2"><div class="g"><label>ラブタイプ</label><input id="f_love" placeholder="憧れの先輩"></div><div class="g"><label>ニックネーム</label><input id="f_nick" placeholder="りゅーびー"></div></div>
+<div class="r2"><div class="g"><label>好きなアーティスト</label><input id="f_art" placeholder="Mrs. GREEN APPLE"></div><div class="g"><label>子供の頃の夢</label><input id="f_dream" placeholder="サッカー選手"></div></div>
+<div class="r2"><div class="g"><label>趣味・特技</label><input id="f_hobby" placeholder="サッカー, スノボ, バイオリン"></div><div class="g"><label>恋愛における自分の強み</label><input id="f_str" placeholder="牽引力 ぐいぐい引っぱる！"></div></div>
+<div class="r2"><div class="g"><label>過去の恋愛失敗談</label><textarea id="f_fail" placeholder="仕事を追うことに夢中になっておざなりにしてしまった"></textarea></div><div class="g"><label>恋愛偏差値</label><input id="f_dev" placeholder="40〜45"></div></div>
+<div class="r2"><div class="g"><label>番組内で自分のここをみて！</label><textarea id="f_watch" placeholder="輪で楽しめるとこ。"></textarea></div><div class="g"><label>OA直前の気持ちは？</label><textarea id="f_feel" placeholder="誰が病人なんだ！！"></textarea></div></div>
 </div>
 
 <div class="card">
@@ -142,200 +88,169 @@ canvas{display:none}
 <div class="out" id="out">
 <h2>完成したカルテ</h2>
 <img id="resultImg" src="" alt="恋愛病院カルテ">
-<p class="hint">📱 長押し（PCは右クリック）→「写真に保存」で保存できます</p>
+<p class="hint">📱 長押し →「写真に追加」で保存できます</p>
 </div>
-
 <canvas id="cv"></canvas>
 </div>
 
 <script>
-let font='Yomogi',icon=null;
+let font='Yomogi', icon=null;
 
 document.getElementById('iconI').addEventListener('change',e=>{
-  const f=e.target.files[0];if(!f)return;
+  const f=e.target.files[0]; if(!f)return;
   const r=new FileReader();
   r.onload=ev=>{
     const i=new Image();
-    i.onload=()=>{
-      icon=i;
-      const p=document.getElementById('iconP');
-      p.innerHTML='';
-      const m=document.createElement('img');
-      m.src=ev.target.result;
-      p.appendChild(m);
-    };
+    i.onload=()=>{icon=i;const p=document.getElementById('iconP');p.innerHTML='';const m=document.createElement('img');m.src=ev.target.result;p.appendChild(m)};
     i.src=ev.target.result;
   };
   r.readAsDataURL(f);
 });
-
-function sf(el){
-  document.querySelectorAll('.fo').forEach(o=>o.classList.remove('on'));
-  el.classList.add('on');
-  font=el.getAttribute('data-f');
-}
+function sf(el){document.querySelectorAll('.fo').forEach(o=>o.classList.remove('on'));el.classList.add('on');font=el.getAttribute('data-f')}
 function V(id){return document.getElementById(id).value||''}
 
-// ========== GENERATE ==========
 function gen(){
-  const c=document.getElementById('cv'), x=c.getContext('2d');
-
-  // Dimensions matching original aspect ratio closely
-  const W=900, H=1140;
-  const S=2; // retina
+  const c=document.getElementById('cv'), g=c.getContext('2d');
+  const W=900, H=1160, S=2;
   c.width=W*S; c.height=H*S;
-  x.scale(S,S);
+  g.scale(S,S);
 
-  // ===== BACKGROUND: diagonal stripes =====
-  // Base color
-  x.fillStyle='#daeaf7';
-  x.fillRect(0,0,W,H);
-
-  // Stripes - alternating lighter and base
-  for(let i=-H*2;i<W+H*2;i+=14){
-    x.strokeStyle='rgba(225,240,250,0.85)';
-    x.lineWidth=8;
-    x.beginPath();x.moveTo(i,0);x.lineTo(i+H*1.2,H);x.stroke();
+  // ====== BACKGROUND ======
+  g.fillStyle='#daedf8';
+  g.fillRect(0,0,W,H);
+  // Diagonal stripes
+  g.save();
+  for(let i=-H*2;i<W+H*2;i+=15){
+    g.strokeStyle='rgba(220,238,250,0.9)';
+    g.lineWidth=8;
+    g.beginPath();g.moveTo(i,0);g.lineTo(i+H*1.1,H);g.stroke();
   }
+  g.restore();
 
-  // ===== WHITE CARD =====
-  const P=32; // outer padding
-  const cx=P, cy=88, cw=W-P*2, ch=H-cy-P;
+  // ====== WHITE CARD ======
+  const P=30;
+  const cx=P, cy=86, cw=W-P*2, ch=H-cy-P;
+  g.save();
+  g.shadowColor='rgba(120,170,210,0.06)';g.shadowBlur=14;g.shadowOffsetY=2;
+  g.fillStyle='#ffffff';
+  rr(g,cx,cy,cw,ch,22); g.fill();
+  g.restore();
 
-  x.save();
-  x.shadowColor='rgba(120,170,210,0.07)';
-  x.shadowBlur=16;x.shadowOffsetY=3;
-  x.fillStyle='#ffffff';
-  rr(x,cx,cy,cw,ch,22);x.fill();
-  x.restore();
+  // ====== HEADER ======
+  g.textAlign='center'; g.textBaseline='alphabetic';
+  g.fillStyle='#b0cedf';
+  g.font="400 12px 'Zen Maru Gothic'";
+  g.fillText('L O V E   C L I N I C',W/2,32);
 
-  // ===== HEADER =====
-  x.textAlign='center'; x.textBaseline='alphabetic';
-  x.fillStyle='#b0cedf';
-  x.font="400 11px 'Zen Maru Gothic'";
-  x.fillText('L O V E   C L I N I C', W/2, 30);
-
-  // 恋愛♡病院
-  x.font="900 38px 'Zen Maru Gothic'";
+  g.font="900 40px 'Zen Maru Gothic'";
   const hy=72;
-  x.textAlign='left';
-  const w1=x.measureText('恋愛').width;
-  const wh=x.measureText('♡').width;
-  const w2=x.measureText('病院').width;
-  const gap=8;
-  const tot=w1+wh+w2+gap*2;
-  const hsx=(W-tot)/2;
-  x.fillStyle='#6aa7d4'; x.fillText('恋愛',hsx,hy);
-  x.fillStyle='#e88fb8'; x.fillText('♡',hsx+w1+gap,hy);
-  x.fillStyle='#6aa7d4'; x.fillText('病院',hsx+w1+wh+gap*2,hy);
+  g.textAlign='left';
+  const w1=g.measureText('恋愛').width, wh=g.measureText('♡').width, w2=g.measureText('病院').width;
+  const sp=10, tot=w1+wh+w2+sp*2, hsx=(W-tot)/2;
+  g.fillStyle='#6aa7d4'; g.fillText('恋愛',hsx,hy);
+  g.fillStyle='#e88fb8'; g.fillText('♡',hsx+w1+sp,hy);
+  g.fillStyle='#6aa7d4'; g.fillText('病院',hsx+w1+wh+sp*2,hy);
 
-  // ===== HEARTS =====
-  heartO(x, cx+8, cy-2, 26, 'rgba(160,205,240,0.45)', 2);
-  heartF(x, W-cx-8, cy-4, 22, 'rgba(160,205,240,0.35)');
-  heartF(x, W-cx-36, cy+10, 13, 'rgba(160,205,240,0.25)');
-  heartF(x, cx+10, H-P+2, 13, 'rgba(190,170,215,0.3)');
-  heartO(x, W-cx-10, H-P, 20, 'rgba(160,205,240,0.35)', 1.5);
+  // ====== HEARTS ======
+  heartO(g,cx+6,cy-4,28,'rgba(155,205,240,0.45)',2);
+  heartF(g,W-cx-10,cy-6,24,'rgba(155,205,240,0.35)');
+  heartF(g,W-cx-42,cy+10,14,'rgba(155,205,240,0.22)');
+  heartF(g,cx+12,H-P+4,14,'rgba(185,165,210,0.3)');
+  heartO(g,W-cx-14,H-P+2,22,'rgba(155,205,240,0.35)',1.5);
 
-  // ===== LAYOUT =====
-  const inner=40; // inner card padding
-  const L=cx+inner;
-  const R=cx+cw-inner;
-  const fullW=R-L;
-  const MID=cx+cw/2; // vertical center line x
-  const CL=L; // left col x
-  const CR=MID+18; // right col x
-  const CLW=MID-CL-18; // left col width
-  const CRW=R-CR; // right col width
+  // ====== LAYOUT CONSTANTS ======
+  const pad=44; // generous inner padding
+  const L=cx+pad, R=cx+cw-pad;
+  const FW=R-L; // full width
+  const MID=cx+cw/2;
+  const CL=L, CR=MID+20;
+  const CLW=MID-CL-20, CRW=R-CR;
 
-  // Icon area
-  const ix=L, iy=cy+inner-6;
-  const iw=240, ih=240;
+  const lc='#7ab4d6'; // label
+  const vc='#1a1a1a'; // value
+  const dc='rgba(180,210,232,0.55)'; // divider (thin, subtle)
 
-  // Colors
-  const lc='#8abdd8'; // label color - slightly more visible
-  const vc='#222'; // value color
-  const dc='rgba(195,218,235,0.6)'; // divider color
+  function label(t,lx,ly){
+    g.fillStyle=lc;
+    g.font="600 15px 'Zen Maru Gothic'"; // bigger, readable labels
+    g.textAlign='left';
+    g.fillText(t,lx,ly);
+  }
 
-  // ===== DRAW ICON =====
-  x.save();
-  rr(x,ix,iy,iw,ih,14);x.clip();
+  // Draw value and return the bottom Y of the last line
+  function val(t,vx,vy,mw,sz){
+    if(!t) return vy;
+    g.fillStyle=vc;
+    g.font="600 "+(sz||28)+"px '"+font+"','Zen Maru Gothic',sans-serif";
+    g.textAlign='left';
+    return wt(g,t,vx,vy,mw||300,(sz||28)+8);
+  }
+
+  // Horizontal line UNDER the answer
+  function uline(x1,x2,y){
+    g.strokeStyle=dc; g.lineWidth=1.2; g.setLineDash([]);
+    g.beginPath();g.moveTo(x1,y);g.lineTo(x2,y);g.stroke();
+  }
+  function vline(vx,y1,y2){
+    g.strokeStyle=dc; g.lineWidth=1; g.setLineDash([]);
+    g.beginPath();g.moveTo(vx,y1);g.lineTo(vx,y2);g.stroke();
+  }
+
+  // ====== ICON ======
+  const ix=L, iy=cy+pad-8, iw=240, ih=240;
+  g.save();
+  rr(g,ix,iy,iw,ih,14); g.clip();
   if(icon){
-    const sc=Math.max(iw/icon.width, ih/icon.height);
+    const sc=Math.max(iw/icon.width,ih/icon.height);
     const sw=icon.width*sc, sh=icon.height*sc;
-    x.drawImage(icon, ix-(sw-iw)/2, iy-(sh-ih)/2, sw, sh);
+    g.drawImage(icon,ix-(sw-iw)/2,iy-(sh-ih)/2,sw,sh);
   } else {
-    x.fillStyle='#edf4fb';x.fillRect(ix,iy,iw,ih);
-    x.fillStyle='#aac8e0';x.font="500 14px 'Zen Maru Gothic'";
-    x.textAlign='center';x.fillText('No Image',ix+iw/2,iy+ih/2+5);
+    g.fillStyle='#edf4fb';g.fillRect(ix,iy,iw,ih);
+    g.fillStyle='#a0c2da';g.font="500 14px 'Zen Maru Gothic'";
+    g.textAlign='center';g.fillText('No Image',ix+iw/2,iy+ih/2+5);
   }
-  x.restore();
+  g.restore();
 
-  // ===== RIGHT SIDE (beside icon): 3 fields =====
-  const rx=ix+iw+30;
-  const rw=R-rx;
-  x.textAlign='left';
+  // ====== RIGHT SIDE: 3 rows beside icon ======
+  const rx=ix+iw+32, rw=R-rx;
+  g.textAlign='left';
 
-  function drawLabel(txt,lx,ly){
-    x.fillStyle=lc;
-    x.font="500 13px 'Zen Maru Gothic'";
-    x.fillText(txt,lx,ly);
-  }
-  function drawVal(txt,vx,vy,mw,sz){
-    if(!txt) return vy;
-    x.fillStyle=vc;
-    x.font="600 "+(sz||28)+"px '"+font+"', 'Zen Maru Gothic', sans-serif";
-    x.textAlign='left';
-    return wt(x,txt,vx,vy,mw||rw,(sz||28)+10);
-  }
-  function drawLine(x1,x2,y){
-    x.strokeStyle=dc; x.lineWidth=1; x.setLineDash([]);
-    x.beginPath();x.moveTo(x1,y);x.lineTo(x2,y);x.stroke();
-  }
-  function drawVLine(vx,y1,y2){
-    x.strokeStyle=dc; x.lineWidth=1; x.setLineDash([]);
-    x.beginPath();x.moveTo(vx,y1);x.lineTo(vx,y2);x.stroke();
-  }
-
-  // The 3 right-side rows are evenly spaced beside the icon
-  // Icon goes from iy to iy+ih (240px tall)
-  // We split that into 3 zones
-
-  const zone = ih / 3; // 80px each
-  const labelOff = 14; // label y offset from zone top
-  const valOff = 42; // value y offset from zone top
-  const lineOff = 68; // line y offset from zone top
+  // Each right row: label at top, value below, line under value
+  // Zone heights (~80px each within 240px icon height)
+  const rz=ih/3;
 
   // お名前
-  let zy = iy;
-  drawLabel('お名前', rx, zy+labelOff);
-  drawVal(V('f_name'), rx, zy+valOff+8, rw, 38);
-  drawLine(rx, R, zy+lineOff+8);
+  let zy=iy+4;
+  label('お名前',rx,zy+14);
+  let vBot=val(V('f_name'),rx,zy+48,rw,38);
+  uline(rx,R,vBot+14);
 
   // 年齢・出身
-  zy = iy + zone;
-  drawLabel('年齢・出身', rx, zy+labelOff);
-  drawVal(V('f_age')+'　'+V('f_from'), rx, zy+valOff+4, rw, 32);
-  drawLine(rx, R, zy+lineOff+4);
+  zy=iy+rz+4;
+  label('年齢・出身',rx,zy+14);
+  vBot=val(V('f_age')+'　'+V('f_from'),rx,zy+46,rw,32);
+  uline(rx,R,vBot+12);
 
   // 職業
-  zy = iy + zone*2;
-  drawLabel('職業', rx, zy+labelOff);
-  drawVal(V('f_job'), rx, zy+valOff+4, rw, 34);
+  zy=iy+rz*2+4;
+  label('職業',rx,zy+14);
+  vBot=val(V('f_job'),rx,zy+48,rw,36);
+  // No line at bottom (end of icon section)
 
-  // ===== TWO-COLUMN SECTION =====
-  // Starts below icon
-  const twoColY = iy + ih + 28;
-  drawLine(L, R, twoColY);
+  // ====== TWO-COLUMN SECTION ======
+  const tcY=iy+ih+36;
+  // Top separator
+  uline(L,R,tcY);
 
-  // Each row definition: height, labels, font sizes
-  const rows = [
-    { h:96, ll:'ラブタイプ',         rl:'ニックネーム',          ls:30, rs:30 },
-    { h:96, ll:'好きなアーティスト',   rl:'子供の頃の夢',         ls:26, rs:28 },
-    { h:96, ll:'趣味・特技',          rl:'恋愛における自分の強み', ls:24, rs:24 },
-    { h:110, ll:'過去の恋愛失敗談',    rl:'恋愛偏差値',           ls:20, rs:42 },
-    { h:110, ll:'番組内で自分のここをみて！', rl:'OA直前の気持ちは？', ls:26, rs:24 },
+  // Row config
+  const rows=[
+    {ll:'ラブタイプ',         rl:'ニックネーム',          ls:30, rs:30, h:100},
+    {ll:'好きなアーティスト',   rl:'子供の頃の夢',         ls:26, rs:28, h:100},
+    {ll:'趣味・特技',          rl:'恋愛における自分の強み', ls:24, rs:24, h:100},
+    {ll:'過去の恋愛失敗談',    rl:'恋愛偏差値',            ls:20, rs:42, h:116},
+    {ll:'番組内で自分のここをみて！',rl:'OA直前の気持ちは？',ls:26, rs:24, h:110},
   ];
-  const vals = [
+  const vls=[
     [()=>V('f_love'), ()=>V('f_nick')],
     [()=>V('f_art'),  ()=>V('f_dream')],
     [()=>V('f_hobby'),()=>V('f_str')],
@@ -343,74 +258,58 @@ function gen(){
     [()=>V('f_watch'),()=>V('f_feel')],
   ];
 
-  let ry = twoColY;
-  rows.forEach((row, i) => {
-    const top = ry + 20; // label y
-    const valy = ry + 50; // value y (generous gap from label)
+  let ry=tcY;
+  rows.forEach((row,i)=>{
+    const labY=ry+24;
+    const valY=ry+56;
 
-    // Left column
-    drawLabel(row.ll, CL, top);
-    drawVal(vals[i][0](), CL, valy, CLW, row.ls);
+    // Left
+    label(row.ll, CL, labY);
+    let lBot=val(vls[i][0](), CL, valY, CLW, row.ls);
 
-    // Vertical divider
-    drawVLine(MID, ry, ry+row.h);
+    // Vertical divider for this row
+    vline(MID, ry, ry+row.h);
 
-    // Right column
-    drawLabel(row.rl, CR, top);
+    // Right
+    label(row.rl, CR, labY);
+    let rBot=val(vls[i][1](), CR, valY, CRW, row.rs);
 
-    // Special: 恋愛偏差値 - value positioned a bit higher for large text
-    if(i===3){
-      drawVal(vals[i][1](), CR, valy+4, CRW, row.rs);
-    } else {
-      drawVal(vals[i][1](), CR, valy, CRW, row.rs);
-    }
+    ry+=row.h;
 
-    ry += row.h;
-
-    // Bottom line for this row (skip last)
-    if(i < rows.length-1){
-      drawLine(L, R, ry);
-    }
+    // Line UNDER answers (across full width) = bottom of this row
+    uline(L, R, ry);
   });
 
-  // ===== CONVERT TO IMG FOR "SAVE IMAGE" =====
-  const dataUrl = c.toDataURL('image/png');
-  const img = document.getElementById('resultImg');
-  img.src = dataUrl;
-  document.getElementById('out').style.display = 'block';
-  setTimeout(()=>document.getElementById('out').scrollIntoView({behavior:'smooth'}), 80);
+  // ====== OUTPUT as <img> ======
+  document.getElementById('resultImg').src = c.toDataURL('image/png');
+  document.getElementById('out').style.display='block';
+  setTimeout(()=>document.getElementById('out').scrollIntoView({behavior:'smooth'}),80);
 }
 
-// ========== UTILITIES ==========
-function rr(x,a,b,w,h,r){
-  x.beginPath();
-  x.moveTo(a+r,b);x.lineTo(a+w-r,b);x.quadraticCurveTo(a+w,b,a+w,b+r);
-  x.lineTo(a+w,b+h-r);x.quadraticCurveTo(a+w,b+h,a+w-r,b+h);
-  x.lineTo(a+r,b+h);x.quadraticCurveTo(a,b+h,a,b+h-r);
-  x.lineTo(a,b+r);x.quadraticCurveTo(a,b,a+r,b);x.closePath();
+// ====== UTILS ======
+function rr(g,a,b,w,h,r){
+  g.beginPath();g.moveTo(a+r,b);g.lineTo(a+w-r,b);g.quadraticCurveTo(a+w,b,a+w,b+r);
+  g.lineTo(a+w,b+h-r);g.quadraticCurveTo(a+w,b+h,a+w-r,b+h);g.lineTo(a+r,b+h);
+  g.quadraticCurveTo(a,b+h,a,b+h-r);g.lineTo(a,b+r);g.quadraticCurveTo(a,b,a+r,b);g.closePath();
 }
-function hp(x,cx,cy,s){
-  x.beginPath();
-  x.moveTo(cx,cy+s*.3);
-  x.bezierCurveTo(cx,cy,cx-s*.5,cy,cx-s*.5,cy+s*.3);
-  x.bezierCurveTo(cx-s*.5,cy+s*.7,cx,cy+s*.85,cx,cy+s);
-  x.bezierCurveTo(cx,cy+s*.85,cx+s*.5,cy+s*.7,cx+s*.5,cy+s*.3);
-  x.bezierCurveTo(cx+s*.5,cy,cx,cy,cx,cy+s*.3);
-  x.closePath();
+function hp(g,cx,cy,s){
+  g.beginPath();g.moveTo(cx,cy+s*.3);
+  g.bezierCurveTo(cx,cy,cx-s*.5,cy,cx-s*.5,cy+s*.3);
+  g.bezierCurveTo(cx-s*.5,cy+s*.7,cx,cy+s*.85,cx,cy+s);
+  g.bezierCurveTo(cx,cy+s*.85,cx+s*.5,cy+s*.7,cx+s*.5,cy+s*.3);
+  g.bezierCurveTo(cx+s*.5,cy,cx,cy,cx,cy+s*.3);g.closePath();
 }
-function heartF(x,cx,cy,s,c){x.save();x.fillStyle=c;hp(x,cx,cy,s);x.fill();x.restore()}
-function heartO(x,cx,cy,s,c,lw){x.save();x.strokeStyle=c;x.lineWidth=lw;hp(x,cx,cy,s);x.stroke();x.restore()}
-
-function wt(ctx,text,wx,wy,mw,lh){
-  let line='',cy=wy;
-  for(let i=0;i<text.length;i++){
-    if(text[i]==='\n'){ctx.fillText(line,wx,cy);line='';cy+=lh;continue}
-    const t=line+text[i];
-    if(ctx.measureText(t).width>mw && line.length>0){
-      ctx.fillText(line,wx,cy);line=text[i];cy+=lh;
-    } else line=t;
+function heartF(g,cx,cy,s,c){g.save();g.fillStyle=c;hp(g,cx,cy,s);g.fill();g.restore()}
+function heartO(g,cx,cy,s,c,lw){g.save();g.strokeStyle=c;g.lineWidth=lw;hp(g,cx,cy,s);g.stroke();g.restore()}
+function wt(g,t,wx,wy,mw,lh){
+  let ln='',cy=wy;
+  for(let i=0;i<t.length;i++){
+    if(t[i]==='\n'){g.fillText(ln,wx,cy);ln='';cy+=lh;continue}
+    const tl=ln+t[i];
+    if(g.measureText(tl).width>mw&&ln.length>0){g.fillText(ln,wx,cy);ln=t[i];cy+=lh}
+    else ln=tl;
   }
-  if(line) ctx.fillText(line,wx,cy);
+  if(ln)g.fillText(ln,wx,cy);
   return cy;
 }
 </script>
