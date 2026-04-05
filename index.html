@@ -40,7 +40,6 @@ body{font-family:'Zen Maru Gothic',sans-serif;background:linear-gradient(135deg,
 .out p.hint{color:#aaa;font-size:.72rem;margin-top:8px}
 #resultImg{max-width:100%;border-radius:10px;box-shadow:0 6px 24px rgba(90,140,200,.15)}
 canvas{display:none}
-#sizeInfo{text-align:center;color:#999;font-size:.7rem;margin-bottom:10px}
 @media(max-width:540px){.r2{grid-template-columns:1fr}.fs{grid-template-columns:repeat(2,1fr)}.title h1{font-size:1.35rem}.card{padding:16px}}
 </style>
 </head>
@@ -84,7 +83,6 @@ canvas{display:none}
 </div>
 
 <button class="btn" onclick="gen()">♡ カルテを生成する ♡</button>
-<div id="sizeInfo"></div>
 
 <div class="out" id="out">
 <h2>完成したカルテ</h2>
@@ -99,10 +97,6 @@ let font='Yomogi',icon=null;
 const tpl=new Image();
 tpl.crossOrigin='anonymous';
 tpl.src='file_1775346015567.jpeg';
-tpl.onload=()=>{
-  document.getElementById('sizeInfo').textContent=
-    'テンプレート読み込み完了 ('+tpl.naturalWidth+'×'+tpl.naturalHeight+')';
-};
 
 document.getElementById('iconI').addEventListener('change',e=>{
   const f=e.target.files[0];if(!f)return;
@@ -114,113 +108,92 @@ function sf(el){document.querySelectorAll('.fo').forEach(o=>o.classList.remove('
 function V(id){return document.getElementById(id).value||''}
 
 function gen(){
-  if(!tpl.complete||!tpl.naturalWidth){
-    alert('テンプレート画像を読み込み中です。少し待ってからもう一度押してください。');return;
-  }
-  const W=tpl.naturalWidth, H=tpl.naturalHeight;
+  if(!tpl.complete||!tpl.naturalWidth){alert('テンプレート読み込み中。少し待ってください。');return}
+
+  // テンプレ画像サイズ: 911 x 1184
+  const W=911,H=1184;
   const c=document.getElementById('cv'),g=c.getContext('2d');
   c.width=W;c.height=H;
   g.drawImage(tpl,0,0,W,H);
 
-  /*
-    テンプレート画像のスクリーンショットから座標を分析：
-    
-    テンプレ画像の構成（上から）：
-    ─ ヘッダー（LOVE CLINIC / 恋愛♡病院）… 画像上部 ~8%
-    ─ 白カード開始 ~8%
-    ─ アイコン枠: 左5%～37%, 上9%～33%（正方形）
-    ─ 右3段:
-      お名前ラベル ~9%, 回答欄の罫線 ~16%
-      年齢出身ラベル ~18%, 回答欄の罫線 ~25%
-      職業ラベル ~27%, 回答欄の罫線 ~33%
-    ─ セクション区切り ~36%
-    ─ 2カラム行1: ラブタイプ/ニックネーム ラベル~37%, 罫線~45%
-    ─ 2カラム行2: 好きなアーティスト/子供の頃の夢 ラベル~47%, 罫線~55%
-    ─ 2カラム行3: 趣味特技/恋愛の強み ラベル~57%, 罫線~65%
-    ─ 2カラム行4: 過去の失敗談/恋愛偏差値 ラベル~67%, 罫線~76%
-    ─ 2カラム行5: 番組内で~/OA直前 ラベル~78%, 罫線~87%
-    ─ 下余白 ~87%～100%
-  */
-
-  // 比率で座標を定義（%表記）
-  // 回答テキストは「ラベルの下～罫線の上」の間に配置
-  // textBaselineを'bottom'にして罫線の少し上に配置する
-
-  g.textBaseline='bottom';
   g.fillStyle='#1a1a1a';
   g.textAlign='left';
-
-  const vc='#1a1a1a';
-
-  function setF(sz){
-    g.fillStyle=vc;
-    g.font="600 "+Math.round(sz)+"px '"+font+"','Zen Maru Gothic',sans-serif";
-  }
+  g.textBaseline='top';
 
   // ===== アイコン =====
-  // アイコン枠の位置（テンプレ画像内の薄いベージュ四角）
-  const iX=W*0.050, iY=H*0.082;
-  const iW=W*0.325, iH=H*0.250;
-  const iR=W*0.015;
-
+  // テンプレの薄いベージュ枠: 約 x:42, y:88, w:265, h:265, r:14
   if(icon){
+    const ax=42,ay=88,aw=265,ah=265,ar=14;
     g.save();
-    rr(g,iX,iY,iW,iH,iR);g.clip();
-    const sc=Math.max(iW/icon.width,iH/icon.height);
+    rr(g,ax,ay,aw,ah,ar);g.clip();
+    const sc=Math.max(aw/icon.width,ah/icon.height);
     const sw=icon.width*sc,sh=icon.height*sc;
-    g.drawImage(icon,iX-(sw-iW)/2,iY-(sh-iH)/2,sw,sh);
+    g.drawImage(icon,ax-(sw-aw)/2,ay-(sh-ah)/2,sw,sh);
     g.restore();
   }
 
-  // ===== 右3段: 回答をラベル下～罫線上に配置 =====
-  // テキストx: アイコン右端の少し右
-  const rX=W*0.42;
-  const rW=W*0.53;
+  // ===== 回答テキスト座標 (911x1184 ピクセル単位) =====
+  // テンプレ画像を見て:
+  //   ラベルの下端 → 回答テキスト開始Y
+  //   罫線 → 回答テキスト終了Y（その上で止まる）
+  //
+  // 右3段 (アイコンの右)
+  //   テキスト左端x: 340
+  //   テキスト右端: 870 → 幅530
+  //
+  // 2カラム
+  //   左列x: 42, 幅: 400
+  //   右列x: 468, 幅: 400
 
-  // お名前: ラベル~H*0.085, 罫線~H*0.155
-  // 回答を罫線の少し上に（baseline=bottom）
-  setF(H*0.038);
-  wt(g, V('f_name'), rX, H*0.092, H*0.148, rW, H*0.042);
+  const rx=340, rw=530;    // 右3段
+  const cLx=42, cLw=400;   // 左列
+  const cRx=468, cRw=400;  // 右列
 
-  // 年齢出身: ラベル~H*0.170, 罫線~H*0.235
-  setF(H*0.032);
-  wt(g, V('f_age')+'　'+V('f_from'), rX, H*0.178, H*0.228, rW, H*0.038);
+  // --- お名前 ---
+  // ラベル「お名前」下端 ≒ y:108, 罫線 ≒ y:155
+  setF(g,36);
+  drawIn(g,V('f_name'), rx, 110, 150, rw);
 
-  // 職業: ラベル~H*0.255, 罫線~H*0.325
-  setF(H*0.035);
-  wt(g, V('f_job'), rX, H*0.262, H*0.318, rW, H*0.040);
+  // --- 年齢・出身 ---
+  // ラベル「年齢・出身」下端 ≒ y:183, 罫線 ≒ y:230
+  setF(g,30);
+  drawIn(g,V('f_age')+'　'+V('f_from'), rx, 185, 225, rw);
 
-  // ===== 2カラム =====
-  const cL=W*0.050;  // 左列x
-  const cR=W*0.505;  // 右列x
-  const cLW=W*0.41;  // 左列幅
-  const cRW=W*0.44;  // 右列幅
+  // --- 職業 ---
+  // ラベル「職業」下端 ≒ y:265, 罫線 ≒ y:325
+  setF(g,32);
+  drawIn(g,V('f_job'), rx, 268, 318, rw);
 
-  // 行1: ラブタイプ/ニックネーム ラベル~H*0.365, 罫線~H*0.435
-  setF(H*0.032);
-  wt(g, V('f_love'), cL, H*0.388, H*0.428, cLW, H*0.038);
-  wt(g, V('f_nick'), cR, H*0.388, H*0.428, cRW, H*0.038);
+  // --- ラブタイプ / ニックネーム ---
+  // ラベル下端 ≒ y:378, 罫線 ≒ y:425
+  setF(g,28);
+  drawIn(g,V('f_love'), cLx, 380, 420, cLw);
+  drawIn(g,V('f_nick'), cRx, 380, 420, cRw);
 
-  // 行2: 好きなアーティスト/子供の頃の夢 ラベル~H*0.455, 罫線~H*0.530
-  setF(H*0.030);
-  wt(g, V('f_art'), cL, H*0.478, H*0.522, cLW, H*0.036);
-  wt(g, V('f_dream'), cR, H*0.478, H*0.522, cRW, H*0.036);
+  // --- 好きなアーティスト / 子供の頃の夢 ---
+  // ラベル下端 ≒ y:458, 罫線 ≒ y:510
+  setF(g,26);
+  drawIn(g,V('f_art'), cLx, 462, 505, cLw);
+  drawIn(g,V('f_dream'), cRx, 462, 505, cRw);
 
-  // 行3: 趣味特技/恋愛の強み ラベル~H*0.548, 罫線~H*0.625
-  setF(H*0.028);
-  wt(g, V('f_hobby'), cL, H*0.572, H*0.618, cLW, H*0.034);
-  wt(g, V('f_str'), cR, H*0.572, H*0.618, cRW, H*0.034);
+  // --- 趣味・特技 / 恋愛における自分の強み ---
+  // ラベル下端 ≒ y:545, 罫線 ≒ y:605
+  setF(g,24);
+  drawIn(g,V('f_hobby'), cLx, 548, 598, cLw);
+  drawIn(g,V('f_str'), cRx, 548, 598, cRw);
 
-  // 行4: 過去の失敗談/恋愛偏差値 ラベル~H*0.643, 罫線~H*0.730
-  setF(H*0.024);
-  wt(g, V('f_fail'), cL, H*0.668, H*0.722, cLW, H*0.030);
-  setF(H*0.044);
-  wt(g, V('f_dev'), cR, H*0.668, H*0.722, cRW, H*0.050);
+  // --- 過去の恋愛失敗談 / 恋愛偏差値 ---
+  // ラベル下端 ≒ y:638, 罫線 ≒ y:718
+  setF(g,22);
+  drawIn(g,V('f_fail'), cLx, 642, 712, cLw);
+  setF(g,38);
+  drawIn(g,V('f_dev'), cRx, 645, 712, cRw);
 
-  // 行5: 番組内で~/OA直前 ラベル~H*0.748, 罫線~H*0.840
-  setF(H*0.028);
-  wt(g, V('f_watch'), cL, H*0.772, H*0.832, cLW, H*0.034);
-  wt(g, V('f_feel'), cR, H*0.772, H*0.832, cRW, H*0.034);
+  // --- 番組内で自分のここをみて！/ OA直前の気持ちは？ ---
+  // ラベル下端 ≒ y:752, 罫線 ≒ y:825
+  setF(g,24);
+  drawIn(g,V('f_watch'), cLx, 755, 818, cLw);
+  drawIn(g,V('f_feel'), cRx, 755, 818, cRw);
 
   // 出力
   document.getElementById('resultImg').src=c.toDataURL('image/png');
@@ -228,29 +201,36 @@ function gen(){
   setTimeout(()=>document.getElementById('out').scrollIntoView({behavior:'smooth'}),80);
 }
 
+function setF(g,sz){
+  g.fillStyle='#1a1a1a';
+  g.font="600 "+sz+"px '"+font+"','Zen Maru Gothic',sans-serif";
+}
+
+// ラベル下端(topY)から罫線(botY)の間にテキストを描画
+function drawIn(g,t,x,topY,botY,maxW){
+  if(!t)return;
+  g.textBaseline='top';
+  const sz=parseInt(g.font);
+  const lh=sz+6;
+  let ln='',cy=topY;
+  for(let i=0;i<t.length;i++){
+    if(t[i]==='\n'){
+      if(cy+lh<=botY+lh) g.fillText(ln,x,cy);
+      ln='';cy+=lh;continue;
+    }
+    const tl=ln+t[i];
+    if(g.measureText(tl).width>maxW&&ln.length>0){
+      if(cy+lh<=botY+lh) g.fillText(ln,x,cy);
+      ln=t[i];cy+=lh;
+    }else ln=tl;
+  }
+  if(ln&&cy<=botY) g.fillText(ln,x,cy);
+}
+
 function rr(g,a,b,w,h,r){
   g.beginPath();g.moveTo(a+r,b);g.lineTo(a+w-r,b);g.quadraticCurveTo(a+w,b,a+w,b+r);
   g.lineTo(a+w,b+h-r);g.quadraticCurveTo(a+w,b+h,a+w-r,b+h);g.lineTo(a+r,b+h);
   g.quadraticCurveTo(a,b+h,a,b+h-r);g.lineTo(a,b+r);g.quadraticCurveTo(a,b,a+r,b);g.closePath();
-}
-
-// wt: テキスト折り返し描画（topYから開始、maxYを超えない）
-function wt(g,t,x,topY,maxY,mw,lh){
-  if(!t)return;
-  g.textBaseline='top';
-  let ln='',cy=topY;
-  for(let i=0;i<t.length;i++){
-    if(t[i]==='\n'){
-      if(cy<=maxY-lh) g.fillText(ln,x,cy);
-      ln='';cy+=lh;continue;
-    }
-    const tl=ln+t[i];
-    if(g.measureText(tl).width>mw&&ln.length>0){
-      if(cy<=maxY-lh) g.fillText(ln,x,cy);
-      ln=t[i];cy+=lh;
-    } else ln=tl;
-  }
-  if(ln&&cy<=maxY) g.fillText(ln,x,cy);
 }
 </script>
 </body>
