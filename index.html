@@ -101,7 +101,7 @@ canvas{display:none}
 </div></div>
 
 <button class="btn" onclick="gen()">♡ カルテを生成する ♡</button>
-<button class="btn2" onclick="genDebug()">🔍 座標確認モード（デバッグ）</button>
+<button class="btn2" onclick="genDebug()">🔍 座標確認モード</button>
 <div id="sizeInfo"></div>
 <div class="ld" id="ld">⏳ 生成中...</div>
 <div class="out" id="out">
@@ -176,49 +176,82 @@ function wt(ctx,text,x,y,maxW,lineH,maxLines){
   return cy;
 }
 
-/* ===========================
-   座標定義（911x1184 基準）
-   
-   テンプレの構造:
-   ラベル(水色)が上 → 空白(回答記入エリア) → 線
-   
-   回答は textBaseline='bottom' にして
-   線のすぐ上（線y - 5px）に描画する。
-   これならラベルに被らない。
-   =========================== */
+/*
+ * ★★★ テンプレ構造（デバッグ画像で確定）★★★
+ *
+ * テンプレの各セクション構造:
+ *   「お名前」ラベル(水色) → その上に灰色線がある
+ *   ラベルの下が回答スペース
+ *   回答スペースの下に次の灰色線
+ *
+ * つまり: 線 → ラベル → 回答スペース → 線 → ラベル → 回答スペース → 線 ...
+ *
+ * デバッグ画像の赤線と実際の灰色線の位置関係から修正:
+ *
+ * === 右3段エリア ===
+ * 「お名前」ラベル: y≈90〜110
+ *   回答スペース: y≈110〜165
+ *   線: y≈165
+ * 「年齢・出身」ラベル: y≈195〜215
+ *   回答スペース: y≈215〜280
+ *   線: y≈280
+ * 「職業」ラベル: y≈315〜335
+ *   回答スペース: y≈335〜395
+ *   線: y≈395
+ *
+ * === 2カラム部分 ===
+ * 「ラブタイプ/ニックネーム」ラベル: y≈420〜440
+ *   回答スペース: y≈440〜500  → 回答y≈475
+ *   線: y≈500
+ * 「好きなアーティスト/子供の頃の夢」ラベル: y≈525〜545
+ *   回答スペース: y≈545〜610  → 回答y≈580
+ *   線: y≈610
+ * 「趣味・特技/恋愛における自分の強み」ラベル: y≈640〜660
+ *   回答スペース: y≈660〜730  → 回答y≈695
+ *   線: y≈730
+ * 「過去の恋愛失敗談/恋愛偏差値」ラベル: y≈755〜775
+ *   回答スペース: y≈775〜850  → 回答y≈810
+ *   線: y≈850
+ * 「番組内で.../OA直前」ラベル: y≈875〜895
+ *   回答スペース: y≈895〜970  → 回答y≈930
+ *   線: y≈970
+ */
 
-// 右3段の線のy座標（テンプレから読み取り）
-var LINE_NAME   = 155;  // お名前の下の線
-var LINE_AGE    = 270;  // 年齢・出身の下の線
-var LINE_JOB    = 390;  // 職業の下の線（＝2カラム境界）
+// アイコン（デバッグ画像で緑枠の上部は合ってたが下が長すぎた）
+var ICON_X=48, ICON_Y=88, ICON_W=265, ICON_H=245;
 
-// 2カラム部分の線のy座標
-var LINE_R1 = 500;  // ラブタイプ/ニックネームの下の線
-var LINE_R2 = 615;  // 好きなアーティスト/子供の頃の夢の下の線
-var LINE_R3 = 735;  // 趣味・特技/恋愛における自分の強みの下の線
-var LINE_R4 = 855;  // 過去の恋愛失敗談/恋愛偏差値の下の線
-var LINE_R5 = 975;  // 番組内で.../OA直前の下の線
+// 右3段
+var RX=375, RMW=480;
 
-// 右3段のx座標
-var RX = 370;    // 右エリア開始x
-var RMW = 480;   // 右エリア最大幅
+// 2カラム
+var CL=55, CR=470, CWL=390, CWR=385;
 
-// 2カラムのx座標
-var CL = 55;     // 左列x
-var CR = 470;    // 右列x
-var CWL = 390;   // 左列幅
-var CWR = 385;   // 右列幅
+// 各セクションの「回答を書くy座標」（ラベルの下、線の上の中間）
+// textBaseline='top' で描画する
 
-// アイコン
-var ICON_X=48, ICON_Y=92, ICON_W=267, ICON_H=290;
+// 右3段の回答y
+var ANS_NAME=115;   // 「お名前」ラベル下
+var ANS_AGE=230;    // 「年齢・出身」ラベル下
+var ANS_JOB=345;    // 「職業」ラベル下
 
-function drawText(g){
+// 2カラムの回答y
+var ANS_R1=455;  // ラブタイプ/ニックネーム
+var ANS_R2=565;  // 好きなアーティスト/子供の頃の夢
+var ANS_R3=675;  // 趣味・特技/恋愛における自分の強み
+var ANS_R4=790;  // 過去の恋愛失敗談/恋愛偏差値
+var ANS_R5=910;  // 番組内で.../OA直前
+
+// デバッグ用の線y座標
+var LINES_RIGHT=[165,280,395];
+var LINES_COL=[500,610,730,850,970];
+
+function drawContent(g){
   var vc='#1a1a1a';
   g.textAlign='left';
-  g.textBaseline='bottom'; // ★ 線の上基準で描画
+  g.textBaseline='top';
   g.fillStyle=vc;
 
-  // ─── アイコン ───
+  // アイコン
   if(icon){
     g.save();
     rr(g,ICON_X,ICON_Y,ICON_W,ICON_H,16);
@@ -229,56 +262,52 @@ function drawText(g){
     g.restore();
   }
 
-  // ─── 右3段（線のすぐ上に回答）───
   g.fillStyle=vc;
 
-  // お名前 → 線y=155の上
+  // お名前
   g.font="600 30px '"+font+"','Zen Maru Gothic',sans-serif";
-  wt(g, V('f_name'), RX, LINE_NAME-10, RMW, 36, 1);
+  wt(g, V('f_name'), RX, ANS_NAME, RMW, 36, 1);
 
-  // 年齢・出身 → 線y=270の上
+  // 年齢・出身
   g.font="600 24px '"+font+"','Zen Maru Gothic',sans-serif";
   var ageTxt=V('f_age');
   if(V('f_from')) ageTxt+='　'+V('f_from');
-  wt(g, ageTxt, RX, LINE_AGE-10, RMW, 30, 1);
+  wt(g, ageTxt, RX, ANS_AGE, RMW, 30, 1);
 
-  // 職業 → 線y=390の上
+  // 職業
   g.font="600 26px '"+font+"','Zen Maru Gothic',sans-serif";
-  wt(g, V('f_job'), RX, LINE_JOB-10, RMW, 32, 1);
+  wt(g, V('f_job'), RX, ANS_JOB, RMW, 32, 1);
 
-  // ─── 2カラム部分（線のすぐ上に回答）───
-  
-  // 行1: ラブタイプ/ニックネーム → 線y=500の上
+  // ラブタイプ/ニックネーム
   g.font="600 24px '"+font+"','Zen Maru Gothic',sans-serif";
   g.fillStyle=vc;
-  wt(g, V('f_love'), CL, LINE_R1-10, CWL, 30, 2);
-  wt(g, V('f_nick'), CR, LINE_R1-10, CWR, 30, 2);
+  wt(g, V('f_love'), CL, ANS_R1, CWL, 30, 1);
+  wt(g, V('f_nick'), CR, ANS_R1, CWR, 30, 1);
 
-  // 行2: 好きなアーティスト/子供の頃の夢 → 線y=615の上
+  // 好きなアーティスト/子供の頃の夢
   g.font="600 22px '"+font+"','Zen Maru Gothic',sans-serif";
   g.fillStyle=vc;
-  wt(g, V('f_art'), CL, LINE_R2-10, CWL, 28, 2);
-  wt(g, V('f_dream'), CR, LINE_R2-10, CWR, 28, 2);
+  wt(g, V('f_art'), CL, ANS_R2, CWL, 28, 1);
+  wt(g, V('f_dream'), CR, ANS_R2, CWR, 28, 1);
 
-  // 行3: 趣味・特技/恋愛における自分の強み → 線y=735の上
+  // 趣味・特技/恋愛における自分の強み
   g.font="600 22px '"+font+"','Zen Maru Gothic',sans-serif";
   g.fillStyle=vc;
-  wt(g, V('f_hobby'), CL, LINE_R3-10, CWL, 28, 3);
-  wt(g, V('f_str'), CR, LINE_R3-10, CWR, 28, 3);
+  wt(g, V('f_hobby'), CL, ANS_R3, CWL, 28, 2);
+  wt(g, V('f_str'), CR, ANS_R3, CWR, 28, 2);
 
-  // 行4: 過去の恋愛失敗談/恋愛偏差値 → 線y=855の上
+  // 過去の恋愛失敗談/恋愛偏差値
   g.font="600 18px '"+font+"','Zen Maru Gothic',sans-serif";
   g.fillStyle=vc;
-  wt(g, V('f_fail'), CL, LINE_R4-10, CWL, 24, 3);
-  // 恋愛偏差値（大きめ）
+  wt(g, V('f_fail'), CL, ANS_R4, CWL, 24, 2);
   g.font="700 36px '"+font+"','Zen Maru Gothic',sans-serif";
-  wt(g, V('f_dev'), CR, LINE_R4-10, CWR, 42, 1);
+  wt(g, V('f_dev'), CR, ANS_R4, CWR, 42, 1);
 
-  // 行5: 番組内で自分のここをみて！/OA直前の気持ちは？ → 線y=975の上
+  // 番組内で.../OA直前
   g.font="600 20px '"+font+"','Zen Maru Gothic',sans-serif";
   g.fillStyle=vc;
-  wt(g, V('f_watch'), CL, LINE_R5-10, CWL, 26, 3);
-  wt(g, V('f_feel'), CR, LINE_R5-10, CWR, 26, 3);
+  wt(g, V('f_watch'), CL, ANS_R5, CWL, 26, 2);
+  wt(g, V('f_feel'), CR, ANS_R5, CWR, 26, 2);
 }
 
 function gen(){
@@ -288,7 +317,7 @@ function gen(){
   var c=document.getElementById('cv'), g=c.getContext('2d');
   c.width=W; c.height=H;
   g.drawImage(tpl,0,0,W,H);
-  drawText(g);
+  drawContent(g);
   document.getElementById('resultImg').src=c.toDataURL('image/png');
   document.getElementById('outTitle').textContent='完成したカルテ';
   document.getElementById('dbgInfo').textContent='';
@@ -297,7 +326,6 @@ function gen(){
   setTimeout(function(){document.getElementById('out').scrollIntoView({behavior:'smooth'});},80);
 }
 
-/* デバッグモード: テンプレ上に赤い線でグリッドを表示 */
 function genDebug(){
   if(!tpl.complete||!tpl.naturalWidth){alert('テンプレート画像を読み込み中です。');return;}
   var W=tpl.naturalWidth, H=tpl.naturalHeight;
@@ -305,38 +333,44 @@ function genDebug(){
   c.width=W; c.height=H;
   g.drawImage(tpl,0,0,W,H);
 
-  // 赤い横線で各LINEの位置を表示
-  g.strokeStyle='rgba(255,0,0,0.6)';
-  g.lineWidth=1;
-  var lines=[LINE_NAME,LINE_AGE,LINE_JOB,LINE_R1,LINE_R2,LINE_R3,LINE_R4,LINE_R5];
-  var names=['NAME','AGE','JOB','R1','R2','R3','R4','R5'];
   g.font='bold 11px sans-serif';
-  g.fillStyle='red';
   g.textBaseline='top';
   g.textAlign='left';
-  for(var i=0;i<lines.length;i++){
-    g.beginPath();g.moveTo(0,lines[i]);g.lineTo(W,lines[i]);g.stroke();
-    g.fillText(names[i]+' y='+lines[i], 5, lines[i]+2);
+
+  // 回答位置を緑の横線で表示
+  g.strokeStyle='rgba(0,180,0,0.7)';g.lineWidth=1;
+  var ansYs=[ANS_NAME,ANS_AGE,ANS_JOB,ANS_R1,ANS_R2,ANS_R3,ANS_R4,ANS_R5];
+  var ansNm=['NAME','AGE','JOB','R1','R2','R3','R4','R5'];
+  for(var i=0;i<ansYs.length;i++){
+    g.beginPath();g.moveTo(0,ansYs[i]);g.lineTo(W,ansYs[i]);g.stroke();
+    g.fillStyle='green';g.fillText('ANS_'+ansNm[i]+' y='+ansYs[i],5,ansYs[i]+2);
   }
 
-  // 青い縦線で列位置を表示
-  g.strokeStyle='rgba(0,0,255,0.5)';
-  var vlines=[RX,CL,CR,ICON_X,ICON_X+ICON_W];
-  var vnames=['RX','CL','CR','ICON_L','ICON_R'];
-  for(var j=0;j<vlines.length;j++){
-    g.beginPath();g.moveTo(vlines[j],0);g.lineTo(vlines[j],H);g.stroke();
-    g.fillStyle='blue';g.fillText(vnames[j]+' x='+vlines[j], vlines[j]+2, 10+j*14);
+  // 灰色線の予想位置を赤で表示
+  g.strokeStyle='rgba(255,0,0,0.5)';
+  var allLines=LINES_RIGHT.concat(LINES_COL);
+  var lineNm=['LINE1','LINE2','LINE3','COL1','COL2','COL3','COL4','COL5'];
+  for(var j=0;j<allLines.length;j++){
+    g.beginPath();g.moveTo(0,allLines[j]);g.lineTo(W,allLines[j]);g.stroke();
+    g.fillStyle='red';g.fillText(lineNm[j]+' y='+allLines[j],W-120,allLines[j]+2);
   }
 
-  // アイコン枠を緑で表示
-  g.strokeStyle='rgba(0,200,0,0.7)';
-  g.lineWidth=2;
-  rr(g,ICON_X,ICON_Y,ICON_W,ICON_H,16);
-  g.stroke();
+  // 縦線
+  g.strokeStyle='rgba(0,0,255,0.4)';
+  var vl=[RX,CL,CR,ICON_X,ICON_X+ICON_W];
+  var vn=['RX','CL','CR','IC_L','IC_R'];
+  for(var k=0;k<vl.length;k++){
+    g.beginPath();g.moveTo(vl[k],0);g.lineTo(vl[k],H);g.stroke();
+    g.fillStyle='blue';g.fillText(vn[k]+'='+vl[k],vl[k]+2,10+k*14);
+  }
+
+  // アイコン枠
+  g.strokeStyle='rgba(0,200,0,0.8)';g.lineWidth=2;
+  rr(g,ICON_X,ICON_Y,ICON_W,ICON_H,16);g.stroke();
 
   document.getElementById('resultImg').src=c.toDataURL('image/png');
   document.getElementById('outTitle').textContent='座標確認モード';
-  document.getElementById('dbgInfo').textContent='赤線=回答の線位置、青線=列位置、緑枠=アイコン位置。ズレてたら教えてください！';
+  document.getElementById('dbgInfo').textContent='緑線=回答位置 赤線=灰色線位置 青線=列位置 緑枠=アイコン';
   document.getElementById('out').style.display='block';
   setTimeout(function(){document.getElementById('out').scrollIntoView({behavior:'smooth'});},80);
 }
