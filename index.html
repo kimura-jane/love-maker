@@ -6,70 +6,90 @@
 <title>恋愛病院カルテメーカー</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@400;500;700;900&family=Klee+One:wght@400;600&family=Yuji+Syuku&family=Zen+Kurenaido&family=Yomogi&family=Kaisei+Opti:wght@400;700&family=Reggae+One&family=Hachi+Maru+Pop&family=Zen+Antique+Soft&family=M+PLUS+Rounded+1c:wght@400;700;800;900&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@300;400;500;700;900&family=Klee+One:wght@400;600&family=Yuji+Syuku&family=Zen+Kurenaido&family=Yomogi&family=Kaisei+Opti:wght@400;700&family=Reggae+One&family=Hachi+Maru+Pop&family=Zen+Antique+Soft&family=M+PLUS+Rounded+1c:wght@400;700;800;900&display=swap" rel="stylesheet">
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 body{font-family:'Zen Maru Gothic',sans-serif;background:linear-gradient(135deg,#e3f0fa,#eee8f5,#fbe4ec);min-height:100vh;padding:16px}
-.wrap{max-width:640px;margin:0 auto}
-.title{text-align:center;margin-bottom:22px}
-.title small{color:#a3c8e2;font-size:.7rem;letter-spacing:3px;display:block;margin-bottom:2px}
-.title h1{font-size:1.7rem;color:#6aa7d4}.title h1 b{color:#e88fb8;font-weight:900}
-.desc{text-align:center;color:#b0b0b0;font-size:.78rem;margin-bottom:20px}
-.card{background:#fff;border-radius:18px;padding:22px 24px;margin-bottom:16px;box-shadow:0 3px 14px rgba(90,140,200,.08)}
-.card h2{color:#6aa7d4;font-size:1.05rem;margin-bottom:14px;padding-bottom:8px;border-bottom:2px dashed #d4e6f4}
-.g{margin-bottom:13px}
-.g label{display:block;font-weight:700;color:#6aa7d4;font-size:.82rem;margin-bottom:3px}
-.g input,.g textarea{width:100%;padding:9px 12px;border:2px solid #d4e6f4;border-radius:10px;font-size:.92rem;font-family:inherit;background:#fafcff;transition:border .2s}
+.wrap{max-width:640px;margin:auto}
+.ttl{text-align:center;margin-bottom:20px}
+.ttl small{color:#a3c8e2;font-size:.7rem;letter-spacing:3px;display:block;margin-bottom:2px}
+.ttl h1{font-size:1.7rem;color:#6aa7d4}.ttl h1 b{color:#e88fb8;font-weight:900}
+.desc{text-align:center;color:#b0b0b0;font-size:.78rem;margin-bottom:18px}
+.cd{background:#fff;border-radius:18px;padding:22px 24px;margin-bottom:14px;box-shadow:0 3px 14px rgba(90,140,200,.08)}
+.cd h2{color:#6aa7d4;font-size:1.05rem;margin-bottom:14px;padding-bottom:8px;border-bottom:2px dashed #d4e6f4}
+.g{margin-bottom:12px}
+.g label{display:block;font-weight:700;color:#6aa7d4;font-size:.85rem;margin-bottom:3px}
+.g input,.g textarea{width:100%;padding:9px 12px;border:2px solid #d4e6f4;border-radius:10px;font-size:.92rem;background:#fafcff}
 .g input:focus,.g textarea:focus{outline:none;border-color:#7bb8df;background:#fff}
-.g textarea{height:50px;resize:vertical}
+.g textarea{height:52px;resize:vertical}
 .r2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
 .iu{display:flex;align-items:center;gap:14px}
-.ip{width:84px;height:84px;border-radius:12px;background:#eaf3fb;display:flex;align-items:center;justify-content:center;overflow:hidden;border:2.5px dashed #a8ceea;flex-shrink:0;cursor:pointer}
+.ip{width:84px;height:84px;border-radius:12px;background:#eaf3fb;display:flex;align-items:center;justify-content:center;overflow:hidden;border:2.5px dashed #a8ceea;cursor:pointer;flex-shrink:0}
 .ip:hover{border-color:#6aa7d4}
 .ip img{width:100%;height:100%;object-fit:cover}
-.ip .ph{color:#9ec5e2;font-size:.65rem;text-align:center;line-height:1.3}
-.fs{display:grid;grid-template-columns:repeat(auto-fill,minmax(115px,1fr));gap:6px}
-.fo{padding:8px 4px;border:2px solid #e0eaf3;border-radius:10px;text-align:center;cursor:pointer;transition:all .2s;background:#fff}
+.ip .ph{color:#9ec5e2;font-size:.6rem;text-align:center;line-height:1.3}
+.fs{display:grid;grid-template-columns:repeat(auto-fill,minmax(110px,1fr));gap:6px}
+.fo{padding:8px 4px;border:2px solid #e0eaf3;border-radius:10px;text-align:center;cursor:pointer;background:#fff;transition:.2s}
 .fo:hover{border-color:#88bade;background:#f0f7ff}
 .fo.on{border-color:#6aa7d4;background:#e3f1fb;box-shadow:0 0 0 2px rgba(106,167,212,.2)}
 .fo .nm{font-size:.58rem;color:#aaa;margin-top:2px}
-.btn{display:block;width:100%;padding:14px;background:linear-gradient(135deg,#7cb8e6,#b3a5d8,#e88fb8);color:#fff;border:none;border-radius:14px;font-size:1.1rem;font-weight:900;font-family:inherit;cursor:pointer;letter-spacing:2px;box-shadow:0 4px 14px rgba(90,140,200,.25);transition:transform .15s,box-shadow .15s}
+.btn{display:block;width:100%;padding:14px;background:linear-gradient(135deg,#7cb8e6,#b3a5d8,#e88fb8);color:#fff;border:none;border-radius:14px;font-size:1.1rem;font-weight:900;cursor:pointer;letter-spacing:2px;box-shadow:0 4px 14px rgba(90,140,200,.25);transition:.15s;margin-bottom:6px}
 .btn:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(90,140,200,.32)}
-.out{display:none;margin-top:22px;text-align:center}
+#sizeInfo{text-align:center;font-size:.7rem;color:#aaa;margin-bottom:8px}
+.out{display:none;margin-top:20px;text-align:center}
 .out h2{color:#6aa7d4;margin-bottom:10px;font-size:1rem}
-.out p.hint{color:#aaa;font-size:.72rem;margin-top:8px}
+.out .hint{color:#aaa;font-size:.72rem;margin-top:8px}
 #resultImg{max-width:100%;border-radius:10px;box-shadow:0 6px 24px rgba(90,140,200,.15)}
 canvas{display:none}
-@media(max-width:540px){.r2{grid-template-columns:1fr}.fs{grid-template-columns:repeat(2,1fr)}.title h1{font-size:1.35rem}.card{padding:16px}}
+.ld{display:none;text-align:center;padding:16px;color:#6aa7d4;font-size:.9rem}
+@media(max-width:540px){.r2{grid-template-columns:1fr}.fs{grid-template-columns:repeat(2,1fr)}.ttl h1{font-size:1.35rem}.cd{padding:16px}}
 </style>
 </head>
 <body>
 <div class="wrap">
-<div class="title"><small>L O V E  C L I N I C</small><h1>恋愛<b>♡</b>病院</h1></div>
+<div class="ttl"><small>L O V E  C L I N I C</small><h1>恋愛<b>♡</b>病院</h1></div>
 <p class="desc">カルテメーカー ─ あなたの恋愛カルテを作ろう！</p>
 
-<div class="card">
-<h2>📷 アイコン設定</h2>
+<!-- アイコン -->
+<div class="cd"><h2>📷 アイコン設定</h2>
 <div class="iu">
 <div class="ip" id="iconP" onclick="document.getElementById('iconI').click()"><div class="ph">タップして<br>画像を選択</div></div>
-<div><input type="file" id="iconI" accept="image/*"><p style="font-size:.65rem;color:#aaa;margin-top:3px">正方形推奨</p></div>
-</div>
-</div>
+<div><input type="file" id="iconI" accept="image/*" style="font-size:.8rem"><p style="font-size:.65rem;color:#aaa;margin-top:3px">正方形推奨</p></div>
+</div></div>
 
-<div class="card">
-<h2>📝 プロフィール</h2>
-<div class="g"><label>お名前</label><input id="f_name" placeholder="桑田 能征"></div>
-<div class="r2"><div class="g"><label>年齢</label><input id="f_age" placeholder="40歳"></div><div class="g"><label>出身地</label><input id="f_from" placeholder="大阪府"></div></div>
+<!-- プロフィール -->
+<div class="cd"><h2>📝 プロフィール</h2>
+<div class="g"><label>お名前</label><input id="f_name" placeholder="桑田 龍星"></div>
+<div class="r2">
+<div class="g"><label>年齢</label><input id="f_age" placeholder="40歳"></div>
+<div class="g"><label>出身地</label><input id="f_from" placeholder="大阪府"></div>
+</div>
 <div class="g"><label>職業</label><input id="f_job" placeholder="実業家"></div>
-<div class="r2"><div class="g"><label>ラブタイプ</label><input id="f_love" placeholder="憧れの先輩"></div><div class="g"><label>ニックネーム</label><input id="f_nick" placeholder="りゅーびー"></div></div>
-<div class="r2"><div class="g"><label>好きなアーティスト</label><input id="f_art" placeholder="Mrs. GREEN APPLE"></div><div class="g"><label>子供の頃の夢</label><input id="f_dream" placeholder="サッカー選手"></div></div>
-<div class="r2"><div class="g"><label>趣味・特技</label><input id="f_hobby" placeholder="サッカー, スノボ, バイオリン"></div><div class="g"><label>恋愛における自分の強み</label><input id="f_str" placeholder="牽引力 ぐいぐい引っぱる！"></div></div>
-<div class="r2"><div class="g"><label>過去の恋愛失敗談</label><textarea id="f_fail" placeholder="仕事を追うことに夢中になっておざなりにしてしまった"></textarea></div><div class="g"><label>恋愛偏差値</label><input id="f_dev" placeholder="40〜45"></div></div>
-<div class="r2"><div class="g"><label>番組内で自分のここをみて！</label><textarea id="f_watch" placeholder="輪で楽しめるとこ。"></textarea></div><div class="g"><label>OA直前の気持ちは？</label><textarea id="f_feel" placeholder="誰が病人なんだ！！"></textarea></div></div>
+<div class="r2">
+<div class="g"><label>ラブタイプ</label><input id="f_love" placeholder="憧れの先輩"></div>
+<div class="g"><label>ニックネーム</label><input id="f_nick" placeholder="りゅーびー"></div>
+</div>
+<div class="r2">
+<div class="g"><label>好きなアーティスト</label><input id="f_art" placeholder="Mrs. GREEN APPLE"></div>
+<div class="g"><label>子供の頃の夢</label><input id="f_dream" placeholder="サッカー選手"></div>
+</div>
+<div class="r2">
+<div class="g"><label>趣味・特技</label><input id="f_hobby" placeholder="サッカー, スノボ, バイオリン"></div>
+<div class="g"><label>恋愛における自分の強み</label><input id="f_str" placeholder="牽引力 ぐいぐい引っぱる！"></div>
+</div>
+<div class="r2">
+<div class="g"><label>過去の恋愛失敗談</label><textarea id="f_fail" placeholder="仕事を追うことに夢中になっておざなりにしてしまった"></textarea></div>
+<div class="g"><label>恋愛偏差値</label><input id="f_dev" placeholder="40〜45"></div>
+</div>
+<div class="r2">
+<div class="g"><label>番組内で自分のここをみて！</label><textarea id="f_watch" placeholder="輪で楽しめるとこ。"></textarea></div>
+<div class="g"><label>OA直前の気持ちは？</label><textarea id="f_feel" placeholder="誰が病人なんだ！！"></textarea></div>
+</div>
 </div>
 
-<div class="card">
-<h2>🖊 フォント選択</h2>
+<!-- フォント -->
+<div class="cd"><h2>🖊 フォント選択</h2>
+<p style="font-size:.75rem;color:#aaa;margin-bottom:8px">回答部分に使うフォントを選んでください</p>
 <div class="fs">
 <div class="fo on" data-f="Yomogi" onclick="sf(this)"><span style="font-family:Yomogi;font-size:1rem">あいう恋愛</span><div class="nm">Yomogi</div></div>
 <div class="fo" data-f="Klee One" onclick="sf(this)"><span style="font-family:'Klee One';font-size:1rem">あいう恋愛</span><div class="nm">Klee One</div></div>
@@ -77,160 +97,215 @@ canvas{display:none}
 <div class="fo" data-f="Yuji Syuku" onclick="sf(this)"><span style="font-family:'Yuji Syuku';font-size:1rem">あいう恋愛</span><div class="nm">Yuji Syuku</div></div>
 <div class="fo" data-f="Hachi Maru Pop" onclick="sf(this)"><span style="font-family:'Hachi Maru Pop';font-size:1rem">あいう恋愛</span><div class="nm">Hachi Maru Pop</div></div>
 <div class="fo" data-f="Zen Antique Soft" onclick="sf(this)"><span style="font-family:'Zen Antique Soft';font-size:1rem">あいう恋愛</span><div class="nm">Zen Antique Soft</div></div>
-<div class="fo" data-f="Zen Maru Gothic" onclick="sf(this)"><span style="font-family:'Zen Maru Gothic';font-weight:700;font-size:1rem">あいう恋愛</span><div class="nm">丸ゴシック</div></div>
-<div class="fo" data-f="M PLUS Rounded 1c" onclick="sf(this)"><span style="font-family:'M PLUS Rounded 1c';font-weight:700;font-size:1rem">あいう恋愛</span><div class="nm">M+Rounded</div></div>
-</div>
-</div>
+<div class="fo" data-f="Kaisei Opti" onclick="sf(this)"><span style="font-family:'Kaisei Opti';font-size:1rem">あいう恋愛</span><div class="nm">Kaisei Opti</div></div>
+<div class="fo" data-f="Reggae One" onclick="sf(this)"><span style="font-family:'Reggae One';font-size:1rem">あいう恋愛</span><div class="nm">Reggae One</div></div>
+</div></div>
 
 <button class="btn" onclick="gen()">♡ カルテを生成する ♡</button>
-
+<div id="sizeInfo"></div>
+<div class="ld" id="ld">⏳ 生成中...</div>
 <div class="out" id="out">
 <h2>完成したカルテ</h2>
 <img id="resultImg" src="" alt="恋愛病院カルテ">
-<p class="hint">📱 長押し →「写真に追加」で保存できます</p>
+<p class="hint">📱 画像を長押し →「写真に追加」で保存できます</p>
 </div>
 <canvas id="cv"></canvas>
 </div>
 
 <script>
-let font='Yomogi',icon=null;
+let font='Yomogi', icon=null;
 const tpl=new Image();
 tpl.crossOrigin='anonymous';
 tpl.src='file_1775346015567.jpeg';
+tpl.onload=function(){
+  document.getElementById('sizeInfo').textContent='テンプレート読み込み完了 ('+tpl.naturalWidth+'×'+tpl.naturalHeight+')';
+};
+tpl.onerror=function(){
+  document.getElementById('sizeInfo').textContent='⚠ テンプレート画像が見つかりません。file_1775346015567.jpeg を同じフォルダに配置してください。';
+};
 
-document.getElementById('iconI').addEventListener('change',e=>{
-  const f=e.target.files[0];if(!f)return;
-  const r=new FileReader();
-  r.onload=ev=>{const i=new Image();i.onload=()=>{icon=i;const p=document.getElementById('iconP');p.innerHTML='';const m=document.createElement('img');m.src=ev.target.result;p.appendChild(m)};i.src=ev.target.result};
+document.getElementById('iconI').addEventListener('change',function(e){
+  var f=e.target.files[0]; if(!f)return;
+  var r=new FileReader();
+  r.onload=function(ev){
+    var img=new Image();
+    img.onload=function(){
+      icon=img;
+      var p=document.getElementById('iconP');
+      p.innerHTML='';
+      var el=document.createElement('img');
+      el.src=ev.target.result;
+      p.appendChild(el);
+    };
+    img.src=ev.target.result;
+  };
   r.readAsDataURL(f);
 });
-function sf(el){document.querySelectorAll('.fo').forEach(o=>o.classList.remove('on'));el.classList.add('on');font=el.getAttribute('data-f')}
-function V(id){return document.getElementById(id).value||''}
 
+function sf(el){
+  document.querySelectorAll('.fo').forEach(function(o){o.classList.remove('on')});
+  el.classList.add('on');
+  font=el.getAttribute('data-f');
+}
+function V(id){return document.getElementById(id).value||'';}
+
+/* ========== テキスト折り返し描画 ========== */
+function wrapText(ctx, text, x, y, maxW, lineH, maxLines){
+  if(!text) return y;
+  maxLines = maxLines || 10;
+  var words = text.split('');
+  var line = '';
+  var cy = y;
+  var count = 0;
+  for(var i=0; i<words.length; i++){
+    var test = line + words[i];
+    if(ctx.measureText(test).width > maxW && line.length > 0){
+      ctx.fillText(line, x, cy);
+      line = words[i];
+      cy += lineH;
+      count++;
+      if(count >= maxLines-1){ line += text.substring(i+1); break; }
+    } else {
+      line = test;
+    }
+  }
+  if(line) ctx.fillText(line, x, cy);
+  return cy;
+}
+
+/* ========== 角丸四角 ========== */
+function rr(ctx,x,y,w,h,r){
+  ctx.beginPath();
+  ctx.moveTo(x+r,y);ctx.lineTo(x+w-r,y);ctx.quadraticCurveTo(x+w,y,x+w,y+r);
+  ctx.lineTo(x+w,y+h-r);ctx.quadraticCurveTo(x+w,y+h,x+w-r,y+h);
+  ctx.lineTo(x+r,y+h);ctx.quadraticCurveTo(x,y+h,x,y+h-r);
+  ctx.lineTo(x,y+r);ctx.quadraticCurveTo(x,y,x+r,y);
+  ctx.closePath();
+}
+
+/* ========== カルテ生成 ========== */
 function gen(){
-  if(!tpl.complete||!tpl.naturalWidth){alert('テンプレート読み込み中。少し待ってください。');return}
+  if(!tpl.complete || !tpl.naturalWidth){
+    alert('テンプレート画像を読み込み中です。少し待ってからもう一度押してください。');
+    return;
+  }
+  document.getElementById('ld').style.display='block';
 
-  // テンプレ画像サイズ: 911 x 1184
-  const W=911,H=1184;
-  const c=document.getElementById('cv'),g=c.getContext('2d');
-  c.width=W;c.height=H;
-  g.drawImage(tpl,0,0,W,H);
+  var W = tpl.naturalWidth;  // 911
+  var H = tpl.naturalHeight; // 1184
+  var c = document.getElementById('cv');
+  var g = c.getContext('2d');
+  c.width = W;
+  c.height = H;
 
-  g.fillStyle='#1a1a1a';
-  g.textAlign='left';
-  g.textBaseline='top';
+  // テンプレート描画
+  g.drawImage(tpl, 0, 0, W, H);
 
-  // ===== アイコン =====
-  // テンプレの薄いベージュ枠: 約 x:42, y:88, w:265, h:265, r:14
+  // ─── 座標定義（911×1184 基準） ─── 
+  // テンプレ画像のレイアウトから読み取り：
+  // カード内padding: 左≈46, 上≈92, 右端≈865
+  // アイコン枠: (46, 92) ～ (300, 346) → 254×254
+  // 右3行の領域: x=320～860, 各行高さ≈85
+  //   行1(名前):    ラベルy≈100, 値y≈130
+  //   行2(年齢出身): ラベルy≈185, 値y≈215
+  //   行3(職業):     ラベルy≈270, 値y≈300
+  // 区切り線: y≈350
+  // 2カラム部分: 5行、各行高さ≈105
+  //   左列: x≈55, 右列: x≈470
+  //   行1(ラブタイプ/ニックネーム): ラベルy≈363, 値y≈395
+  //   行2(アーティスト/夢):        ラベルy≈468, 値y≈500
+  //   行3(趣味/強み):              ラベルy≈573, 値y≈605
+  //   行4(失敗談/偏差値):          ラベルy≈678, 値y≈710
+  //   行5(ここ見て/OA気持ち):      ラベルy≈783, 値y≈815
+
+  var vc = '#1a1a1a'; // 値のテキスト色
+
+  // ─── アイコン描画 ───
   if(icon){
-    const ax=42,ay=88,aw=265,ah=265,ar=14;
+    var ix=46, iy=92, iw=254, ih=254, ir=14;
     g.save();
-    rr(g,ax,ay,aw,ah,ar);g.clip();
-    const sc=Math.max(aw/icon.width,ah/icon.height);
-    const sw=icon.width*sc,sh=icon.height*sc;
-    g.drawImage(icon,ax-(sw-aw)/2,ay-(sh-ah)/2,sw,sh);
+    rr(g, ix, iy, iw, ih, ir);
+    g.clip();
+    var sc = Math.max(iw/icon.width, ih/icon.height);
+    var dw = icon.width * sc;
+    var dh = icon.height * sc;
+    g.drawImage(icon, ix - (dw - iw)/2, iy - (dh - ih)/2, dw, dh);
     g.restore();
   }
 
-  // ===== 回答テキスト座標 (911x1184 ピクセル単位) =====
-  // テンプレ画像を見て:
-  //   ラベルの下端 → 回答テキスト開始Y
-  //   罫線 → 回答テキスト終了Y（その上で止まる）
-  //
-  // 右3段 (アイコンの右)
-  //   テキスト左端x: 340
-  //   テキスト右端: 870 → 幅530
-  //
-  // 2カラム
-  //   左列x: 42, 幅: 400
-  //   右列x: 468, 幅: 400
+  // ─── テキスト描画設定 ───
+  g.textAlign = 'left';
+  g.textBaseline = 'alphabetic';
+  g.fillStyle = vc;
 
-  const rx=340, rw=530;    // 右3段
-  const cLx=42, cLw=400;   // 左列
-  const cRx=468, cRw=400;  // 右列
+  // --- 右3行 ---
+  var rx = 320;  // 右エリア開始x
+  var rmw = 530; // 右エリア最大幅
 
-  // --- お名前 ---
-  // ラベル「お名前」下端 ≒ y:108, 罫線 ≒ y:155
-  setF(g,36);
-  drawIn(g,V('f_name'), rx, 110, 150, rw);
+  // お名前（大きめ）
+  g.font = "600 36px '" + font + "','Zen Maru Gothic',sans-serif";
+  g.fillStyle = vc;
+  wrapText(g, V('f_name'), rx, 138, rmw, 42, 1);
 
-  // --- 年齢・出身 ---
-  // ラベル「年齢・出身」下端 ≒ y:183, 罫線 ≒ y:230
-  setF(g,30);
-  drawIn(g,V('f_age')+'　'+V('f_from'), rx, 185, 225, rw);
+  // 年齢・出身地
+  g.font = "600 28px '" + font + "','Zen Maru Gothic',sans-serif";
+  g.fillStyle = vc;
+  var ageFrom = V('f_age');
+  if(V('f_from')) ageFrom += '　' + V('f_from');
+  wrapText(g, ageFrom, rx, 222, rmw, 34, 1);
 
-  // --- 職業 ---
-  // ラベル「職業」下端 ≒ y:265, 罫線 ≒ y:325
-  setF(g,32);
-  drawIn(g,V('f_job'), rx, 268, 318, rw);
+  // 職業
+  g.font = "600 30px '" + font + "','Zen Maru Gothic',sans-serif";
+  g.fillStyle = vc;
+  wrapText(g, V('f_job'), rx, 305, rmw, 36, 1);
 
-  // --- ラブタイプ / ニックネーム ---
-  // ラベル下端 ≒ y:378, 罫線 ≒ y:425
-  setF(g,28);
-  drawIn(g,V('f_love'), cLx, 380, 420, cLw);
-  drawIn(g,V('f_nick'), cRx, 380, 420, cRw);
+  // --- 2カラム部分 ---
+  var cL = 55;   // 左列x
+  var cR = 470;  // 右列x
+  var cwL = 390; // 左列最大幅
+  var cwR = 390; // 右列最大幅
 
-  // --- 好きなアーティスト / 子供の頃の夢 ---
-  // ラベル下端 ≒ y:458, 罫線 ≒ y:510
-  setF(g,26);
-  drawIn(g,V('f_art'), cLx, 462, 505, cLw);
-  drawIn(g,V('f_dream'), cRx, 462, 505, cRw);
+  // 行1: ラブタイプ / ニックネーム
+  g.font = "600 26px '" + font + "','Zen Maru Gothic',sans-serif";
+  g.fillStyle = vc;
+  wrapText(g, V('f_love'), cL, 402, cwL, 32, 2);
+  wrapText(g, V('f_nick'), cR, 402, cwR, 32, 2);
 
-  // --- 趣味・特技 / 恋愛における自分の強み ---
-  // ラベル下端 ≒ y:545, 罫線 ≒ y:605
-  setF(g,24);
-  drawIn(g,V('f_hobby'), cLx, 548, 598, cLw);
-  drawIn(g,V('f_str'), cRx, 548, 598, cRw);
+  // 行2: 好きなアーティスト / 子供の頃の夢
+  g.font = "600 24px '" + font + "','Zen Maru Gothic',sans-serif";
+  g.fillStyle = vc;
+  wrapText(g, V('f_art'), cL, 507, cwL, 30, 2);
+  wrapText(g, V('f_dream'), cR, 507, cwR, 30, 2);
 
-  // --- 過去の恋愛失敗談 / 恋愛偏差値 ---
-  // ラベル下端 ≒ y:638, 罫線 ≒ y:718
-  setF(g,22);
-  drawIn(g,V('f_fail'), cLx, 642, 712, cLw);
-  setF(g,38);
-  drawIn(g,V('f_dev'), cRx, 645, 712, cRw);
+  // 行3: 趣味・特技 / 恋愛における自分の強み
+  g.font = "600 22px '" + font + "','Zen Maru Gothic',sans-serif";
+  g.fillStyle = vc;
+  wrapText(g, V('f_hobby'), cL, 612, cwL, 28, 2);
+  wrapText(g, V('f_str'), cR, 612, cwR, 28, 2);
 
-  // --- 番組内で自分のここをみて！/ OA直前の気持ちは？ ---
-  // ラベル下端 ≒ y:752, 罫線 ≒ y:825
-  setF(g,24);
-  drawIn(g,V('f_watch'), cLx, 755, 818, cLw);
-  drawIn(g,V('f_feel'), cRx, 755, 818, cRw);
+  // 行4: 過去の恋愛失敗談 / 恋愛偏差値
+  g.font = "600 20px '" + font + "','Zen Maru Gothic',sans-serif";
+  g.fillStyle = vc;
+  wrapText(g, V('f_fail'), cL, 717, cwL, 26, 3);
+  // 恋愛偏差値は大きめ
+  g.font = "700 40px '" + font + "','Zen Maru Gothic',sans-serif";
+  g.fillStyle = vc;
+  wrapText(g, V('f_dev'), cR, 725, cwR, 48, 1);
 
-  // 出力
-  document.getElementById('resultImg').src=c.toDataURL('image/png');
-  document.getElementById('out').style.display='block';
-  setTimeout(()=>document.getElementById('out').scrollIntoView({behavior:'smooth'}),80);
-}
+  // 行5: 番組内で自分のここをみて！ / OA直前の気持ちは？
+  g.font = "600 22px '" + font + "','Zen Maru Gothic',sans-serif";
+  g.fillStyle = vc;
+  wrapText(g, V('f_watch'), cL, 825, cwL, 28, 3);
+  wrapText(g, V('f_feel'), cR, 825, cwR, 28, 3);
 
-function setF(g,sz){
-  g.fillStyle='#1a1a1a';
-  g.font="600 "+sz+"px '"+font+"','Zen Maru Gothic',sans-serif";
-}
-
-// ラベル下端(topY)から罫線(botY)の間にテキストを描画
-function drawIn(g,t,x,topY,botY,maxW){
-  if(!t)return;
-  g.textBaseline='top';
-  const sz=parseInt(g.font);
-  const lh=sz+6;
-  let ln='',cy=topY;
-  for(let i=0;i<t.length;i++){
-    if(t[i]==='\n'){
-      if(cy+lh<=botY+lh) g.fillText(ln,x,cy);
-      ln='';cy+=lh;continue;
-    }
-    const tl=ln+t[i];
-    if(g.measureText(tl).width>maxW&&ln.length>0){
-      if(cy+lh<=botY+lh) g.fillText(ln,x,cy);
-      ln=t[i];cy+=lh;
-    }else ln=tl;
-  }
-  if(ln&&cy<=botY) g.fillText(ln,x,cy);
-}
-
-function rr(g,a,b,w,h,r){
-  g.beginPath();g.moveTo(a+r,b);g.lineTo(a+w-r,b);g.quadraticCurveTo(a+w,b,a+w,b+r);
-  g.lineTo(a+w,b+h-r);g.quadraticCurveTo(a+w,b+h,a+w-r,b+h);g.lineTo(a+r,b+h);
-  g.quadraticCurveTo(a,b+h,a,b+h-r);g.lineTo(a,b+r);g.quadraticCurveTo(a,b,a+r,b);g.closePath();
+  // 結果表示
+  var dataUrl = c.toDataURL('image/png');
+  document.getElementById('resultImg').src = dataUrl;
+  document.getElementById('out').style.display = 'block';
+  document.getElementById('ld').style.display = 'none';
+  setTimeout(function(){
+    document.getElementById('out').scrollIntoView({behavior:'smooth'});
+  }, 80);
 }
 </script>
 </body>
