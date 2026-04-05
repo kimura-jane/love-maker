@@ -35,6 +35,7 @@ body{font-family:'Zen Maru Gothic',sans-serif;background:linear-gradient(135deg,
 .fo .nm{font-size:.58rem;color:#aaa;margin-top:2px}
 .btn{display:block;width:100%;padding:14px;background:linear-gradient(135deg,#7cb8e6,#b3a5d8,#e88fb8);color:#fff;border:none;border-radius:14px;font-size:1.1rem;font-weight:900;cursor:pointer;letter-spacing:2px;box-shadow:0 4px 14px rgba(90,140,200,.25);transition:.15s;margin-bottom:6px}
 .btn:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(90,140,200,.32)}
+.btn2{display:block;width:100%;padding:10px;background:#e0ecf5;color:#6aa7d4;border:none;border-radius:10px;font-size:.85rem;font-weight:700;cursor:pointer;margin-bottom:6px}
 #sizeInfo{text-align:center;font-size:.7rem;color:#aaa;margin-bottom:8px}
 .out{display:none;margin-top:20px;text-align:center}
 .out h2{color:#6aa7d4;margin-bottom:10px;font-size:1rem}
@@ -42,6 +43,7 @@ body{font-family:'Zen Maru Gothic',sans-serif;background:linear-gradient(135deg,
 #resultImg{max-width:100%;border-radius:10px;box-shadow:0 6px 24px rgba(90,140,200,.15)}
 canvas{display:none}
 .ld{display:none;text-align:center;padding:16px;color:#6aa7d4;font-size:.9rem}
+.dbg{margin-top:8px;font-size:.7rem;color:#999;text-align:center}
 @media(max-width:540px){.r2{grid-template-columns:1fr}.fs{grid-template-columns:repeat(2,1fr)}.ttl h1{font-size:1.35rem}.cd{padding:16px}}
 </style>
 </head>
@@ -99,12 +101,14 @@ canvas{display:none}
 </div></div>
 
 <button class="btn" onclick="gen()">♡ カルテを生成する ♡</button>
+<button class="btn2" onclick="genDebug()">🔍 座標確認モード（デバッグ）</button>
 <div id="sizeInfo"></div>
 <div class="ld" id="ld">⏳ 生成中...</div>
 <div class="out" id="out">
-<h2>完成したカルテ</h2>
+<h2 id="outTitle">完成したカルテ</h2>
 <img id="resultImg" src="" alt="恋愛病院カルテ">
 <p class="hint">📱 画像を長押し →「写真に追加」で保存できます</p>
+<p class="dbg" id="dbgInfo"></p>
 </div>
 <canvas id="cv"></canvas>
 </div>
@@ -115,10 +119,10 @@ var tpl=new Image();
 tpl.crossOrigin='anonymous';
 tpl.src='file_1775346015567.jpeg';
 tpl.onload=function(){
-  document.getElementById('sizeInfo').textContent='テンプレート読み込み完了 ('+tpl.naturalWidth+'×'+tpl.naturalHeight+')';
+  document.getElementById('sizeInfo').textContent='テンプレート読み込み完了 ('+tpl.naturalWidth+'x'+tpl.naturalHeight+')';
 };
 tpl.onerror=function(){
-  document.getElementById('sizeInfo').textContent='⚠ テンプレート画像が見つかりません。file_1775346015567.jpeg を同じフォルダに置いてください。';
+  document.getElementById('sizeInfo').textContent='⚠ テンプレート画像が見つかりません';
 };
 
 document.getElementById('iconI').addEventListener('change',function(e){
@@ -172,137 +176,168 @@ function wt(ctx,text,x,y,maxW,lineH,maxLines){
   return cy;
 }
 
+/* ===========================
+   座標定義（911x1184 基準）
+   
+   テンプレの構造:
+   ラベル(水色)が上 → 空白(回答記入エリア) → 線
+   
+   回答は textBaseline='bottom' にして
+   線のすぐ上（線y - 5px）に描画する。
+   これならラベルに被らない。
+   =========================== */
+
+// 右3段の線のy座標（テンプレから読み取り）
+var LINE_NAME   = 155;  // お名前の下の線
+var LINE_AGE    = 270;  // 年齢・出身の下の線
+var LINE_JOB    = 390;  // 職業の下の線（＝2カラム境界）
+
+// 2カラム部分の線のy座標
+var LINE_R1 = 500;  // ラブタイプ/ニックネームの下の線
+var LINE_R2 = 615;  // 好きなアーティスト/子供の頃の夢の下の線
+var LINE_R3 = 735;  // 趣味・特技/恋愛における自分の強みの下の線
+var LINE_R4 = 855;  // 過去の恋愛失敗談/恋愛偏差値の下の線
+var LINE_R5 = 975;  // 番組内で.../OA直前の下の線
+
+// 右3段のx座標
+var RX = 370;    // 右エリア開始x
+var RMW = 480;   // 右エリア最大幅
+
+// 2カラムのx座標
+var CL = 55;     // 左列x
+var CR = 470;    // 右列x
+var CWL = 390;   // 左列幅
+var CWR = 385;   // 右列幅
+
+// アイコン
+var ICON_X=48, ICON_Y=92, ICON_W=267, ICON_H=290;
+
+function drawText(g){
+  var vc='#1a1a1a';
+  g.textAlign='left';
+  g.textBaseline='bottom'; // ★ 線の上基準で描画
+  g.fillStyle=vc;
+
+  // ─── アイコン ───
+  if(icon){
+    g.save();
+    rr(g,ICON_X,ICON_Y,ICON_W,ICON_H,16);
+    g.clip();
+    var sc=Math.max(ICON_W/icon.width,ICON_H/icon.height);
+    var dw=icon.width*sc, dh=icon.height*sc;
+    g.drawImage(icon, ICON_X-(dw-ICON_W)/2, ICON_Y-(dh-ICON_H)/2, dw, dh);
+    g.restore();
+  }
+
+  // ─── 右3段（線のすぐ上に回答）───
+  g.fillStyle=vc;
+
+  // お名前 → 線y=155の上
+  g.font="600 30px '"+font+"','Zen Maru Gothic',sans-serif";
+  wt(g, V('f_name'), RX, LINE_NAME-10, RMW, 36, 1);
+
+  // 年齢・出身 → 線y=270の上
+  g.font="600 24px '"+font+"','Zen Maru Gothic',sans-serif";
+  var ageTxt=V('f_age');
+  if(V('f_from')) ageTxt+='　'+V('f_from');
+  wt(g, ageTxt, RX, LINE_AGE-10, RMW, 30, 1);
+
+  // 職業 → 線y=390の上
+  g.font="600 26px '"+font+"','Zen Maru Gothic',sans-serif";
+  wt(g, V('f_job'), RX, LINE_JOB-10, RMW, 32, 1);
+
+  // ─── 2カラム部分（線のすぐ上に回答）───
+  
+  // 行1: ラブタイプ/ニックネーム → 線y=500の上
+  g.font="600 24px '"+font+"','Zen Maru Gothic',sans-serif";
+  g.fillStyle=vc;
+  wt(g, V('f_love'), CL, LINE_R1-10, CWL, 30, 2);
+  wt(g, V('f_nick'), CR, LINE_R1-10, CWR, 30, 2);
+
+  // 行2: 好きなアーティスト/子供の頃の夢 → 線y=615の上
+  g.font="600 22px '"+font+"','Zen Maru Gothic',sans-serif";
+  g.fillStyle=vc;
+  wt(g, V('f_art'), CL, LINE_R2-10, CWL, 28, 2);
+  wt(g, V('f_dream'), CR, LINE_R2-10, CWR, 28, 2);
+
+  // 行3: 趣味・特技/恋愛における自分の強み → 線y=735の上
+  g.font="600 22px '"+font+"','Zen Maru Gothic',sans-serif";
+  g.fillStyle=vc;
+  wt(g, V('f_hobby'), CL, LINE_R3-10, CWL, 28, 3);
+  wt(g, V('f_str'), CR, LINE_R3-10, CWR, 28, 3);
+
+  // 行4: 過去の恋愛失敗談/恋愛偏差値 → 線y=855の上
+  g.font="600 18px '"+font+"','Zen Maru Gothic',sans-serif";
+  g.fillStyle=vc;
+  wt(g, V('f_fail'), CL, LINE_R4-10, CWL, 24, 3);
+  // 恋愛偏差値（大きめ）
+  g.font="700 36px '"+font+"','Zen Maru Gothic',sans-serif";
+  wt(g, V('f_dev'), CR, LINE_R4-10, CWR, 42, 1);
+
+  // 行5: 番組内で自分のここをみて！/OA直前の気持ちは？ → 線y=975の上
+  g.font="600 20px '"+font+"','Zen Maru Gothic',sans-serif";
+  g.fillStyle=vc;
+  wt(g, V('f_watch'), CL, LINE_R5-10, CWL, 26, 3);
+  wt(g, V('f_feel'), CR, LINE_R5-10, CWR, 26, 3);
+}
+
 function gen(){
   if(!tpl.complete||!tpl.naturalWidth){alert('テンプレート画像を読み込み中です。');return;}
   document.getElementById('ld').style.display='block';
+  var W=tpl.naturalWidth, H=tpl.naturalHeight;
+  var c=document.getElementById('cv'), g=c.getContext('2d');
+  c.width=W; c.height=H;
+  g.drawImage(tpl,0,0,W,H);
+  drawText(g);
+  document.getElementById('resultImg').src=c.toDataURL('image/png');
+  document.getElementById('outTitle').textContent='完成したカルテ';
+  document.getElementById('dbgInfo').textContent='';
+  document.getElementById('out').style.display='block';
+  document.getElementById('ld').style.display='none';
+  setTimeout(function(){document.getElementById('out').scrollIntoView({behavior:'smooth'});},80);
+}
 
+/* デバッグモード: テンプレ上に赤い線でグリッドを表示 */
+function genDebug(){
+  if(!tpl.complete||!tpl.naturalWidth){alert('テンプレート画像を読み込み中です。');return;}
   var W=tpl.naturalWidth, H=tpl.naturalHeight;
   var c=document.getElementById('cv'), g=c.getContext('2d');
   c.width=W; c.height=H;
   g.drawImage(tpl,0,0,W,H);
 
-  /*
-   * テンプレート構造（911×1184）：
-   *
-   * ラベルは既にテンプレ画像に描かれている。
-   * 回答テキストをラベルの上（線の手前）に描画する。
-   *
-   * 構造: 各セクションに「回答エリア」と「下の線」がある。
-   * ラベルは線の下に印字済み。回答は線のすぐ上に書く。
-   *
-   * テンプレ画像の座標を画像から読み取り：
-   *
-   * === 上部エリア（アイコン＋右3段）===
-   * アイコン枠: (48, 92) → (315, 382)  → 幅267, 高290
-   *
-   * 右側エリア x=370～850:
-   *   「お名前」ラベル: y≈96 (テンプレに印字済み)
-   *   → 名前の回答: y≈80〜95の間ではなく、ラベルの下に回答を書く
-   *
-   * 実際の構造を再確認：
-   *   テンプレ画像を見ると、ラベルが上にあり、その下に線がある。
-   *   つまり「お名前」(ラベル) → 空白 → 線 → 「年齢・出身」(ラベル) → 空白 → 線 → ...
-   *   回答はラベルと線の間の空白部分に書く。
-   *
-   * 右3段:
-   *   ラベル「お名前」  y≈96    回答エリア: y≈120〜155  線: y≈160
-   *   ラベル「年齢・出身」y≈210   回答エリア: y≈240〜275  線: y≈280
-   *   ラベル「職業」    y≈330   回答エリア: y≈360〜395  線: y≈400(=2カラム境界)
-   *
-   * 2カラム (5行):
-   *   左x≈50, 右x≈465, 左幅400, 右幅400
-   *
-   *   行1 ラベル「ラブタイプ/ニックネーム」 y≈430
-   *        回答エリア: y≈410〜425   線: y≈425  ← 違う
-   *
-   * もう一度テンプレ画像を見直す。
-   * ラベルが下、回答が上、線がその間にあるのではなく:
-   * 
-   * テンプレの構造:
-   *   ラベル (水色テキスト) → その下に空白スペース → 線
-   *   回答はラベルと線の間に書く
-   *
-   * ラブタイプ(ラベル y≈432) → 回答 y≈460〜485 → 線 y≈492
-   * 好きなアーティスト(ラベル y≈545) → 回答 y≈575〜600 → 線 y≈608
-   * 趣味・特技(ラベル y≈660) → 回答 y≈690〜715 → 線 y≈722
-   * 過去の恋愛失敗談(ラベル y≈775) → 回答 y≈805〜830 → 線 y≈838
-   * 番組内で(ラベル y≈890) → 回答 y≈920〜945 → 線 y≈952
-   */
-
-  var vc='#1a1a1a';
+  // 赤い横線で各LINEの位置を表示
+  g.strokeStyle='rgba(255,0,0,0.6)';
+  g.lineWidth=1;
+  var lines=[LINE_NAME,LINE_AGE,LINE_JOB,LINE_R1,LINE_R2,LINE_R3,LINE_R4,LINE_R5];
+  var names=['NAME','AGE','JOB','R1','R2','R3','R4','R5'];
+  g.font='bold 11px sans-serif';
+  g.fillStyle='red';
+  g.textBaseline='top';
   g.textAlign='left';
-  g.textBaseline='alphabetic';
-  g.fillStyle=vc;
-
-  // ─── アイコン ───
-  if(icon){
-    var ix=48, iy=92, iw=267, ih=290, ir=16;
-    g.save();
-    rr(g,ix,iy,iw,ih,ir);
-    g.clip();
-    var sc=Math.max(iw/icon.width,ih/icon.height);
-    var dw=icon.width*sc, dh=icon.height*sc;
-    g.drawImage(icon, ix-(dw-iw)/2, iy-(dh-ih)/2, dw, dh);
-    g.restore();
+  for(var i=0;i<lines.length;i++){
+    g.beginPath();g.moveTo(0,lines[i]);g.lineTo(W,lines[i]);g.stroke();
+    g.fillText(names[i]+' y='+lines[i], 5, lines[i]+2);
   }
 
-  // ─── 右3段（ラベルの下、線の上に回答を書く）───
-  var rx=375, rmw=470;
+  // 青い縦線で列位置を表示
+  g.strokeStyle='rgba(0,0,255,0.5)';
+  var vlines=[RX,CL,CR,ICON_X,ICON_X+ICON_W];
+  var vnames=['RX','CL','CR','ICON_L','ICON_R'];
+  for(var j=0;j<vlines.length;j++){
+    g.beginPath();g.moveTo(vlines[j],0);g.lineTo(vlines[j],H);g.stroke();
+    g.fillStyle='blue';g.fillText(vnames[j]+' x='+vlines[j], vlines[j]+2, 10+j*14);
+  }
 
-  // お名前 → ラベルy≈96, 回答をy≈130に（ラベルの下30pxくらい）
-  g.fillStyle=vc;
-  g.font="600 32px '"+font+"','Zen Maru Gothic',sans-serif";
-  wt(g, V('f_name'), rx, 130, rmw, 38, 1);
+  // アイコン枠を緑で表示
+  g.strokeStyle='rgba(0,200,0,0.7)';
+  g.lineWidth=2;
+  rr(g,ICON_X,ICON_Y,ICON_W,ICON_H,16);
+  g.stroke();
 
-  // 年齢・出身 → ラベルy≈210, 回答をy≈250に
-  g.font="600 26px '"+font+"','Zen Maru Gothic',sans-serif";
-  var ageTxt=V('f_age');
-  if(V('f_from')) ageTxt+='　'+V('f_from');
-  wt(g, ageTxt, rx, 250, rmw, 32, 1);
-
-  // 職業 → ラベルy≈330, 回答をy≈365に
-  g.font="600 28px '"+font+"','Zen Maru Gothic',sans-serif";
-  wt(g, V('f_job'), rx, 365, rmw, 34, 1);
-
-  // ─── 2カラム部分 ───
-  var cL=55, cR=470, cwL=390, cwR=385;
-
-  // 行1: ラブタイプ/ニックネーム → ラベルy≈432, 回答y≈465
-  g.font="600 26px '"+font+"','Zen Maru Gothic',sans-serif";
-  g.fillStyle=vc;
-  wt(g, V('f_love'), cL, 465, cwL, 32, 2);
-  wt(g, V('f_nick'), cR, 465, cwR, 32, 2);
-
-  // 行2: 好きなアーティスト/子供の頃の夢 → ラベルy≈545, 回答y≈580
-  g.font="600 24px '"+font+"','Zen Maru Gothic',sans-serif";
-  g.fillStyle=vc;
-  wt(g, V('f_art'), cL, 580, cwL, 30, 2);
-  wt(g, V('f_dream'), cR, 580, cwR, 30, 2);
-
-  // 行3: 趣味・特技/恋愛における自分の強み → ラベルy≈660, 回答y≈695
-  g.font="600 24px '"+font+"','Zen Maru Gothic',sans-serif";
-  g.fillStyle=vc;
-  wt(g, V('f_hobby'), cL, 695, cwL, 30, 3);
-  wt(g, V('f_str'), cR, 695, cwR, 30, 3);
-
-  // 行4: 過去の恋愛失敗談/恋愛偏差値 → ラベルy≈775, 回答y≈810
-  g.font="600 20px '"+font+"','Zen Maru Gothic',sans-serif";
-  g.fillStyle=vc;
-  wt(g, V('f_fail'), cL, 810, cwL, 26, 3);
-  // 恋愛偏差値は大きめ
-  g.font="700 38px '"+font+"','Zen Maru Gothic',sans-serif";
-  wt(g, V('f_dev'), cR, 818, cwR, 44, 1);
-
-  // 行5: 番組内で自分のここをみて！/OA直前の気持ちは？ → ラベルy≈890, 回答y≈925
-  g.font="600 22px '"+font+"','Zen Maru Gothic',sans-serif";
-  g.fillStyle=vc;
-  wt(g, V('f_watch'), cL, 925, cwL, 28, 3);
-  wt(g, V('f_feel'), cR, 925, cwR, 28, 3);
-
-  // 結果表示
   document.getElementById('resultImg').src=c.toDataURL('image/png');
+  document.getElementById('outTitle').textContent='座標確認モード';
+  document.getElementById('dbgInfo').textContent='赤線=回答の線位置、青線=列位置、緑枠=アイコン位置。ズレてたら教えてください！';
   document.getElementById('out').style.display='block';
-  document.getElementById('ld').style.display='none';
   setTimeout(function(){document.getElementById('out').scrollIntoView({behavior:'smooth'});},80);
 }
 </script>
